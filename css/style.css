@@ -1,0 +1,44 @@
+:root {
+    --real-vh: 1vh;
+    --color-primary: rgb(255, 255, 255,0.2);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: calc(var( --real-vh,1vh)*100);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: repeating-linear-gradient(320deg, rgba(225,225,0,0.2) 0px, rgba(225,225,0,0.2) 2px, transparent 8px, transparent 80px), repeating-linear-gradient(10deg, rgba(225,225,0,0.2) 0px, rgba(225,225,0,0.2) 2px, transparent 1px, transparent 80px), linear-gradient(160deg, rgb(0, 0, 0) 0%, rgb(20, 20, 90) 50%,rgb(25, 25, 112) 100%);
+    box-shadow: 0 4px 32px 0 rgba(0,0,0,0.12) inset;
+}
+
+.container {
+    min-height: calc(var( --real-vh,1vh)*100);
+    display: flex;
+    width: 100%;
+}
+
+.body-left {
+    flex: 1;
+}
+
+.body-right {
+    flex: 1;
+}
+
+.body-mid {
+    flex: 4;
+    background: var(--color-primary);
+    backdrop-filter: blur(1px); /* ±³¾°Ä£ºý */
+    border-radius: 12px; /* Ô²½Ç */
+    border: 1px solid var(--color-primary);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08); /* ¶à²ãÒõÓ° */
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+}
