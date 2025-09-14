@@ -1,6 +1,18 @@
 :root {
     --real-vh: 1vh;
-    --color-primary: rgb(255, 255, 255,0.2);
+    --bg-color-first: rgba(0, 0, 0);
+    --bg-color-mid: rgba(20, 20, 90);
+    --bg-color-end: rgba(36, 36, 150);
+    --card-bg: rgba(255, 255, 255,0.2);
+    --card-border: rgb(255, 250, 0);
+    --grid-size: 200;
+    --grid-line-width: 2;
+    --grid-line-color: rgba(225,225,0,0.5);
+    --grid-highlight-color: rgba(255,255,255,0.2);
+    --grid-shadow-color: rgba(0,0,0,0.3);
+    --grid-shadow-blur: 4;
+    --grid-angle1: 100;
+    --grid-angle2: 60;
 }
 
 * {
@@ -10,16 +22,46 @@
 }
 
 body {
-    min-height: calc(var( --real-vh,1vh)*100);
+    min-height: calc(var(--real-vh,1vh)*100);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: repeating-linear-gradient(320deg, rgba(225,225,0,0.2) 0px, rgba(225,225,0,0.2) 2px, transparent 8px, transparent 80px), repeating-linear-gradient(10deg, rgba(225,225,0,0.2) 0px, rgba(225,225,0,0.2) 2px, transparent 1px, transparent 80px), linear-gradient(160deg, rgb(0, 0, 0) 0%, rgb(20, 20, 90) 50%,rgb(25, 25, 112) 100%);
-    box-shadow: 0 4px 32px 0 rgba(0,0,0,0.12) inset;
+    background: linear-gradient(145deg, var(--bg-color-first) 0%, var(--bg-color-mid) 50%, var(--bg-color-end) 100%);
 }
 
 .container {
-    min-height: calc(var( --real-vh,1vh)*100);
+    position: relative;
+    min-height: calc(var(--real-vh,1vh)*100);
     display: flex;
     width: 100%;
+}
+
+    .container > *:not(.bg-img) {
+        position: relative;
+        z-index: 1;
+    }
+
+.bg-img {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.7;
+    background-image: url("../assets/Logo-B-0.png");
+    background-repeat: no-repeat;
+    background-position: -5% 10%;
+    background-size: min(40vw, 60vh) auto;
+}
+
+.card {
+    background: var(--card-bg);
+    backdrop-filter: blur(1px);
+    border-radius: 12px;
+    border: 1px solid var(--card-border);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    margin: 0.5%;
 }
 
 .body-left {
@@ -32,13 +74,32 @@ body {
 
 .body-mid {
     flex: 4;
-    background: var(--color-primary);
-    backdrop-filter: blur(1px); /* ±³¾°Ä£ºý */
-    border-radius: 12px; /* Ô²½Ç */
-    border: 1px solid var(--color-primary);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08); /* ¶à²ãÒõÓ° */
-    width: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
-@media (max-width: 768px) {
+.head {
+    flex: 1;
+}
+
+.content {
+    flex: 5;
+}
+
+#grid-bg {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    pointer-events: none;
+}
+
+@media (max-width: 800px) {
+    .bg-img {
+        background-position: -10% 10%;
+        background-size: auto 30%;
+    }
+}
 }
