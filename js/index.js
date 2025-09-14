@@ -11,7 +11,7 @@ async function handleRequest(request) {
     };
 
     const targetPage = countryPageMap[country] || 'Global.html';
-    //const baseURL = 'https://myprofile-bai.pages.dev//';
+    const baseURL = 'https://profile-bai.pages.dev//';
 
     try {
         const pageResponse = await fetch(baseURL + targetPage);
