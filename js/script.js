@@ -43,7 +43,7 @@ function drawSkewGrid(canvas) {
     const ctx = canvas.getContext('2d');
     const gridSize = parseInt(getCssVar('--grid-size')) || 200;
     const lineWidth = parseInt(getCssVar('--grid-line-width')) || 2;
-    const lineColor = getCssVar('--grid-line-color') || 'rgba(225,225,0,0.5)';
+    const lineColor = getCssVar('--grid-line-color') || 'rgba(255, 192, 203,0.5)';
     const highlightColor = getCssVar('--grid-highlight-color') || 'rgba(255,255,255,0.2)';
     const shadowColor = getCssVar('--grid-shadow-color') || 'rgba(0,0,0,0.3)';
     const shadowBlur = parseInt(getCssVar('--grid-shadow-blur')) || 4;
