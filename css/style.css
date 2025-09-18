@@ -1,143 +1,191 @@
+/* ------------------ CSS 变量定义 ------------------ */
+
+/* 根元素自定义属性定义 */
 :root {
+    /* 真实的视口高度单位，用于解决移动端浏览器视口高度问题 */
     --real-vh: 1vh;
+    /* 背景渐变颜色配置 */
     --bg-color-first: rgba(0, 0, 0);
     --bg-color-mid: rgba(20, 20, 90);
     --bg-color-end: rgba(36, 36, 150);
-    --card-bg: rgba(255, 255, 255,0.2);
-    --card-border: rgba(255, 250, 0);
-    --grid-size: 200;
-    --grid-line-width: 2;
-    --grid-line-color: rgba(255, 192, 203,0.5);
-    --grid-highlight-color: rgba(255,255,255,0.2);
-    --grid-shadow-color: rgba(0,0,0,0.3);
-    --grid-shadow-blur: 4;
-    --grid-angle1: 100;
-    --grid-angle2: 60;
-    --grid-fade-duration: 2;
+    /* 卡片样式配置 */
+    --card-bg: rgba(255, 255, 255,0.2); /* 卡片背景色 */
+    --card-border: rgba(255, 250, 0); /* 卡片边框色 */
+    /* 网格样式配置 */
+    --grid-size: 200; /* 网格大小 */
+    --grid-line-width: 2; /* 网格线宽度 */
+    --grid-line-color: rgba(255, 192, 203,0.5); /* 网格线颜色 */
+    --grid-highlight-color: rgba(255,255,255,0.2); /* 网格高亮颜色 */
+    --grid-shadow-color: rgba(0,0,0,0.3); /* 网格阴影颜色 */
+    --grid-shadow-blur: 4; /* 网格阴影模糊程度 */
+    --grid-angle1: 100; /* 网格第一组线角度 */
+    --grid-angle2: 60; /* 网格第二组线角度 */
+    --grid-fade-duration: 2; /* 网格淡入淡出动画持续时间 */
 }
 
+/* ------------------ 全局重置 ------------------ */
+
+/* 全局元素样式重置 */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+    margin: 0; /* 清除默认外边距 */
+    padding: 0; /* 清除默认内边距 */
+    box-sizing: border-box; /* 使用边框盒模型 */
 }
 
+/* ------------------ 基础样式 ------------------ */
+
+/* 页面主体样式 */
 body {
+    /* 最小高度设置为视口高度 */
     min-height: calc(var(--real-vh,1vh)*100);
+    /* 字体设置 */
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    /* 背景渐变 */
     background: linear-gradient(145deg, var(--bg-color-first) 0%, var(--bg-color-mid) 50%, var(--bg-color-end) 100%);
 }
 
+/* ------------------ 布局容器 ------------------ */
+
+/* 主容器样式 */
 .container {
-    position: relative;
-    min-height: calc(var(--real-vh,1vh)*100);
-    display: flex;
-    width: 100%;
+    position: relative; /* 相对定位 */
+    min-height: calc(var(--real-vh,1vh)*100); /* 最小高度为视口高度 */
+    display: flex; /* 使用弹性布局 */
+    width: 100%; /* 宽度100% */
 }
 
+    /* 容器内所有直接子元素（除背景图片外）的样式 */
     .container > *:not(.bg-img) {
-        position: relative;
-        z-index: 1;
+        position: relative; /* 相对定位 */
+        z-index: 1; /* 设置堆叠顺序 */
     }
 
+/* ------------------ 背景图片 ------------------ */
+
+/* 背景图片样式 */
 .bg-img {
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.7;
+    position: absolute; /* 绝对定位 */
+    left: 0; /* 左侧对齐 */
+    top: 0; /* 顶部对齐 */
+    right: 0; /* 右侧对齐 */
+    bottom: 0; /* 底部对齐 */
+    pointer-events: none; /* 禁止鼠标事件 */
+    z-index: 0; /* 设置堆叠顺序 */
+    opacity: 0.7; /* 透明度 */
+    /* 背景图片设置 */
     background-image: url("../assets/Logo-B-0.png");
-    background-repeat: no-repeat;
-    background-position: -5% 10%;
-    background-size: min(30vw, 50vh) auto;
+    background-repeat: no-repeat; /* 禁止重复 */
+    background-position: -5% 10%; /* 背景位置 */
+    background-size: min(30vw, 50vh) auto; /* 背景尺寸 */
 }
 
+/* ------------------ 卡片组件 ------------------ */
+
+/* 卡片样式 */
 .card {
-    background: var(--card-bg);
-    backdrop-filter: blur(1px);
-    border-radius: 12px;
-    border: 1px solid var(--card-border);
+    background: var(--card-bg); /* 背景色 */
+    backdrop-filter: blur(1px); /* 背景模糊效果 */
+    border-radius: 12px; /* 圆角 */
+    border: 1px solid var(--card-border); /* 边框 */
+    /* 阴影效果 */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
-    width: 100%;
-    margin: 0.5%;
+    width: 100%; /* 宽度100% */
+    margin: 0.5%; /* 外边距 */
 }
 
+/* ------------------ 布局区域 ------------------ */
+
+/* 左侧区域 */
 .body-left {
-    flex: 1;
+    flex: 1; /* 弹性比例 */
 }
 
+/* 右侧区域 */
 .body-right {
-    flex: 1;
+    flex: 1; /* 弹性比例 */
 }
 
+/* 中间区域 */
 .body-mid {
-    flex: 7;
-    display: flex;
-    flex-direction: column;
+    flex: 7; /* 弹性比例 */
+    display: flex; /* 弹性布局 */
+    flex-direction: column; /* 垂直方向排列 */
 }
 
+/* 头部区域 */
 .head {
-    flex: 1;
+    flex: 1; /* 弹性比例 */
 }
 
+/* 内容区域 */
 .content {
-    flex: 5;
+    flex: 5; /* 弹性比例 */
 }
 
+/* 切换按钮样式 */
+.toggle {
+    /* 此处样式待补充 */
+}
+
+/* ------------------ 网格背景 ------------------ */
+
+/* 网格背景Canvas样式 */
 #grid-bg {
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: -1;
-    pointer-events: none;
+    position: fixed; /* 固定定位 */
+    left: 0; /* 左侧对齐 */
+    top: 0; /* 顶部对齐 */
+    width: 100vw; /* 宽度为视口宽度 */
+    height: 100vh; /* 高度为视口高度 */
+    z-index: -1; /* 设置堆叠顺序 */
+    pointer-events: none; /* 禁止鼠标事件 */
 }
 
+/* ------------------ 响应式设计 ------------------ */
+
+/* 中等屏幕设备适配 */
 @media (max-width: 1024px) {
     :root {
-        --grid-size: 200;
+        --grid-size: 200; /* 调整网格大小 */
     }
 
     .bg-img {
-        background-position: -5% 10%;
-        background-size: min(40vw, 50vh) auto;
+        background-position: -5% 10%; /* 调整背景位置 */
+        background-size: min(40vw, 50vh) auto; /* 调整背景尺寸 */
     }
 
     .body-mid {
-        flex: 6;
+        flex: 6; /* 调整弹性比例 */
     }
 }
 
+/* 平板设备适配 */
 @media (max-width: 768px) {
     :root {
-        --grid-size: 150;
+        --grid-size: 150; /* 调整网格大小 */
     }
 
     .bg-img {
-        background-position: -5% 10%;
-        background-size: min(40vw, 50vh) auto;
+        background-position: -5% 10%; /* 调整背景位置 */
+        background-size: min(40vw, 50vh) auto; /* 调整背景尺寸 */
     }
 
     .body-mid {
-        flex: 6;
+        flex: 6; /* 调整弹性比例 */
     }
 }
 
+/* 手机设备适配 */
 @media (max-width: 425px) {
     :root {
-        --grid-size: 100;
+        --grid-size: 100; /* 调整网格大小 */
     }
 
     .bg-img {
-        background-position: -10% 10%;
-        background-size: min(60vw, 70vh) auto;
+        background-position: -10% 10%; /* 调整背景位置 */
+        background-size: min(60vw, 70vh) auto; /* 调整背景尺寸 */
     }
 
     .body-mid {
-        flex: 5;
+        flex: 5; /* 调整弹性比例 */
     }
 }
