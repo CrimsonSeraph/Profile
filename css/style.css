@@ -84,7 +84,7 @@ body {
 /* 卡片样式 */
 .card {
     background: var(--card-bg); /* 背景色 */
-    backdrop-filter: blur(1px); /* 背景模糊效果 */
+    backdrop-filter: blur(10px); /* 背景模糊效果 */
     border-radius: 12px; /* 圆角 */
     border: 1px solid var(--card-border); /* 边框 */
     /* 阴影效果 */
@@ -117,6 +117,142 @@ body {
     flex: 1; /* 弹性比例 */
 }
 
+/* 头像图片 */
+.avatar img {
+    width: 100%; /* 宽度撑满容器 */
+    height: 100%; /* 高度撑满容器 */
+    object-fit: cover; /* 保持图片比例，覆盖整个容器 */
+    display: block; /* 消除图片底部间隙 */
+    position: relative; /* 相对定位 */
+    object-position: center; /* 图片内容居中显示 */
+    margin: 0 auto; /* 水平居中 */
+}
+
+/* ====================== 导航与按钮 ====================== */
+/* 按钮组容器 */
+.button-group {
+    display: flex;
+    flex-direction: column; /* 垂直排列 */
+    gap: 10px; /* 按钮间距 */
+    width: 100%; /* 继承父级宽度 */
+    overflow: visible; /* 允许内容溢出 */
+}
+
+/* 主要按钮样式 */
+.toggle {
+    background: var(--button-bg);
+    color: var(--text-color);
+    border: none;
+    border-radius: 20px; /* 圆角 */
+    cursor: pointer;
+    backdrop-filter: blur(5px); /* 背景模糊效果 */
+    transition: all 0.3s ease; /* 平滑过渡 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 阴影效果 */
+    width: 100%; /* 统一宽度 */
+    max-width: 100%;
+    box-sizing: border-box;
+    white-space: nowrap; /* 禁止换行 */
+    text-overflow: ellipsis; /* 文字溢出显示省略号 */
+    line-height: 1.5;
+    padding: 0.5% 1%;
+    justify-content: center;
+    position: relative;
+    display: flex;
+    align-items: center;
+    text-align: center;
+}
+
+    /* 按钮悬停效果 */
+    .toggle:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* 增强阴影 */
+        text-shadow: 0 0 8px var(--text-border-color); /* 黄金光晕 */
+        transition: text-shadow 0.3s ease;
+    }
+
+    /* 子菜单按钮样式 */
+    .toggle.mini {
+        border-radius: 30px; /* 圆角 */
+        background: var(--button-bg);
+        color: var(--text-color);
+        border: none;
+        cursor: pointer;
+        backdrop-filter: blur(5px);
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        line-height: 1.5;
+        padding: 5% 1%; /* 内边距 */
+        justify-content: center;
+        position: relative;
+        display: flex;
+        align-items: center;
+        text-align: center;
+    }
+
+/* ------ 导航栏 ------ */
+.navigation-bar {
+    width: 100%;
+    padding: 10px;
+    z-index: 100; /* 较高层级 */
+    max-height: 90vh; /* 最大高度 */
+    overflow-y: auto; /* 垂直滚动 */
+}
+
+/* 内容区域样式 */
+#content-text {
+    padding: 20px;
+    max-height: 100%; /* 设置最大高度 */
+    overflow-y: auto; /* 垂直滚动 */
+    overflow-wrap: break-word; /* 单词内换行 */
+    word-break: keep-all; /* 中文不随意断行 */
+    white-space: pre-line; /* 保留换行符 */
+    text-wrap: pretty; /* 优化文本换行 */
+}
+
+/* ------ 可展开菜单 ------ */
+.expandable-menu {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+    /* 展开状态 */
+    .expandable-menu.expanded {
+        gap: 10px; /* 增加间距 */
+    }
+
+/* 子按钮容器 */
+.sub-buttons {
+    display: flex;
+    max-height: 0; /* 初始高度为0 */
+    overflow: hidden; /* 隐藏溢出 */
+    transition: max-height 0.3s ease, opacity 0.2s ease; /* 展开动画 */
+    opacity: 0; /* 初始透明 */
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* 展开状态下的子按钮 */
+.expandable-menu.expanded .sub-buttons {
+    max-height: 400px; /* 最大高度 */
+    opacity: 1; /* 完全显示 */
+}
+
+/* 展开按钮指示器 */
+.expand-btn::after {
+    content: " ▼"; /* 向下箭头 */
+    font-size: 0.8em; /* 小号字体 */
+}
+
+/* 展开状态下的指示器 */
+.expandable-menu.expanded .expand-btn::after {
+    content: " ▲"; /* 向上箭头 */
+}
+
 /* 内容区域 */
 .content {
     flex: 5; /* 弹性比例 */
@@ -138,6 +274,28 @@ body {
     height: 100vh; /* 高度为视口高度 */
     z-index: -1; /* 设置堆叠顺序 */
     pointer-events: none; /* 禁止鼠标事件 */
+}
+
+/* ------------------ 特殊效果 ------------------ */
+
+/* 渐变颜色效果 */
+.gradient-text {
+    background: linear-gradient(45deg, #FF9A9E 0%, #FAD0C4 50%, #A18CD1 100%); /* 创建渐变背景 */
+    background-clip: text;
+    color: transparent; /* 隐藏原始文字颜色 */
+    -webkit-text-fill-color: transparent; /* Safari兼容 */
+    display: inline-block; /* 确保渐变效果正确应用 */
+}
+
+/* 文字省略号处理 */
+.ellipsis {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; /* 限制显示2行 */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.4;
+    max-height: 2.8em; /* 行高 × 行数 */
 }
 
 /* ------------------ 响应式设计 ------------------ */
