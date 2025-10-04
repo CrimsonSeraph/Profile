@@ -4,77 +4,256 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>正在加载</title>
+    <style>
+        /* 加载动画样式 */
+        .loader-wrap {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        .loader-text {
+            margin-bottom: 20px;
+            font-size: 18px;
+            color: #333;
+        }
+
+        .progress-bar {
+            width: 300px;
+            height: 6px;
+            background: #f0f0f0;
+            border-radius: 3px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #45a049);
+            width: 0%;
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-percent {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #4CAF50;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* 错误信息样式 */
+        #errorMessage {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+
+        .error-icon {
+            font-size: 48px;
+            color: #ff4444;
+            margin-bottom: 20px;
+        }
+
+        .error-text {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .error-code {
+            font-size: 16px;
+            color: #666;
+            font-family: monospace;
+        }
+
+        .retry-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+            .retry-btn:hover {
+                background: #45a049;
+            }
+    </style>
 </head>
 <body>
 
-    <div id="errorMessage" style="display:none">
-        重定向失败！错误码：<span id="errorCode"></span>
+    <!-- 加载动画 -->
+    <div class="loader-wrap">
+        <div class="loading-spinner"></div>
+        <div class="loader-text">正在加载页面，请稍候...</div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-percent" id="progressPercent">0%</div>
+    </div>
+
+    <!-- 错误信息 -->
+    <div id="errorMessage">
+        <div class="error-icon">⚠️</div>
+        <div class="error-text">重定向失败！</div>
+        <div class="error-code">错误码：<span id="errorCode"></span></div>
+        <button class="retry-btn" onclick="window.location.reload()">重试</button>
     </div>
 
     <script>
         // 当DOM内容加载完成后执行
         document.addEventListener('DOMContentLoaded', function () {
-            // 从全局变量获取目标页面路径，默认为'/CN.html'
-            const targetPage = window.targetPage || '/CN.html';
+            const progressFill = document.getElementById('progressFill');
+            const progressPercent = document.getElementById('progressPercent');
+            const loaderWrap = document.querySelector('.loader-wrap');
+            const errorMessage = document.getElementById('errorMessage');
+
+            // 从全局变量获取目标页面路径，默认为'./CN.html'
+            const targetPage = window.targetPage || './CN.html';
 
             // 重定向状态控制变量
-            let redirectAttempted = false;  // 是否已尝试重定向
-            let redirectSucceeded = false;  // 重定向是否成功
+            let redirectAttempted = false;
+            let redirectSucceeded = false;
+            let progress = 0;
 
-            // 设置5秒超时计时器，超时则显示错误
+            // 最小显示时间（毫秒）- 确保加载页面至少显示这么长时间
+            const MIN_DISPLAY_TIME = 2000; // 2秒
+            const startTime = Date.now();
+
+            // 进度条动画
+            const progressInterval = setInterval(updateProgress, 100);
+
+            // 设置5秒超时计时器
             const errorTimeout = setTimeout(showError, 5000);
 
             // 监听页面可见性变化
             document.addEventListener('visibilitychange', function () {
-                // 当页面变为隐藏状态（说明开始卸载）
                 if (document.visibilityState === 'hidden') {
-                    redirectSucceeded = true;   // 标记重定向成功
-                    clearTimeout(errorTimeout); // 清除超时错误检测
+                    redirectSucceeded = true;
+                    clearTimeout(errorTimeout);
+                    clearInterval(progressInterval);
                 }
             });
 
             // 执行重定向操作
             redirectToTarget(targetPage);
 
+            // 更新进度条
+            function updateProgress() {
+                if (progress < 90) {
+                    progress += Math.random() * 10;
+                    if (progress > 90) progress = 90;
+
+                    progressFill.style.width = progress + '%';
+                    progressPercent.textContent = Math.round(progress) + '%';
+                }
+            }
+
+            // 完成进度条
+            function completeProgress() {
+                progress = 100;
+                progressFill.style.width = '100%';
+                progressPercent.textContent = '100%';
+
+                // 计算已经显示的时间
+                const elapsedTime = Date.now() - startTime;
+                const remainingTime = Math.max(0, MIN_DISPLAY_TIME - elapsedTime);
+
+                setTimeout(() => {
+                    loaderWrap.style.opacity = '0';
+                    setTimeout(() => {
+                        loaderWrap.style.display = 'none';
+                    }, 300);
+                }, remainingTime);
+            }
+
             // 重定向核心函数
             function redirectToTarget(target) {
-                redirectAttempted = true;   // 标记已尝试重定向
+                redirectAttempted = true;
 
-                // 构建基础路径：当前域名 + 当前路径的目录部分
                 const basePath = window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '/');
-                // 构建完整目标路径：基础路径 + 目标页面（移除开头的斜杠）
                 const targetPath = basePath + target.replace(/^\//, '');
 
                 try {
-                    // 创建隐藏iframe实现预加载
                     const preloadFrame = document.createElement('iframe');
-                    preloadFrame.style.display = 'none';    // 隐藏iframe
-                    preloadFrame.src = targetPath;  // 设置目标URL
-                    document.body.appendChild(preloadFrame);    // 添加到DOM
+                    preloadFrame.style.display = 'none';
+                    preloadFrame.src = targetPath;
+                    document.body.appendChild(preloadFrame);
 
-                    // iframe加载成功回调
                     preloadFrame.onload = function () {
-                        redirectSucceeded = true;   // 标记成功
-                        window.location.replace(targetPath);    // 正式重定向（不保留历史记录）
+                        redirectSucceeded = true;
+                        clearTimeout(errorTimeout);
+                        clearInterval(progressInterval);
+                        completeProgress();
+
+                        // 延迟跳转，确保用户看到加载页面
+                        setTimeout(() => {
+                            window.location.replace(targetPath);
+                        }, remainingTime + 300); // 额外300ms用于淡出动画
                     };
 
-                    // iframe加载失败回调
                     preloadFrame.onerror = function () {
-                        showError();    // 显示错误信息
+                        // 同样确保错误页面至少显示最小时间
+                        const elapsedTime = Date.now() - startTime;
+                        const remainingTime = Math.max(0, MIN_DISPLAY_TIME - elapsedTime);
+
+                        setTimeout(showError, remainingTime);
                     };
                 } catch (e) {
-                    // 捕获创建iframe时的异常
-                    showError();
+                    const elapsedTime = Date.now() - startTime;
+                    const remainingTime = Math.max(0, MIN_DISPLAY_TIME - elapsedTime);
+
+                    setTimeout(showError, remainingTime);
                 }
             }
 
             // 错误处理函数
             function showError() {
-                // 仅在重定向未成功且未尝试过时显示错误
                 if (!redirectSucceeded && !redirectAttempted) {
-                    // 显示错误信息元素（实际HTML中需存在对应元素）
-                    document.getElementById('errorMessage').style.display = 'block';
-                    // 生成4位随机错误码 (1000-9999)
+                    clearInterval(progressInterval);
+                    loaderWrap.style.display = 'none';
+                    errorMessage.style.display = 'flex';
+
                     const errorCode = Math.floor(1000 + Math.random() * 9000);
                     document.getElementById('errorCode').textContent = `ERR_${errorCode}`;
                 }
