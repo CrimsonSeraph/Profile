@@ -12,9 +12,9 @@ const CONTENT_DATA_NORMAL = {
 }
 
 const ImagePath = {
-    avatar: "assest/avatar.png",
-    Logo_1: "assest/Logo-1.png",
-    Logo_2L: "assest/Logo-2L.png",
+    avatar: "assets/avatar.png",
+    Logo_1: "assets/Logo-1.png",
+    Logo_2L: "assets/Logo-2L.png",
     Logo_2R:"assets/Logo-2R.png",
     Logo_B:"assets/Logo-B.png",
     Logo_B_0 :"assets/Logo-B-0.png",

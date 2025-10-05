@@ -1,3 +1,0 @@
-const CONTENT_DATA = {
-
-}

@@ -11,12 +11,58 @@ document.addEventListener('DOMContentLoaded', async function () {
     setRealVh();
     window.addEventListener('resize', setRealVh);
 
+    // 滚动时添加消失效果
+    const hero_texts = document.querySelector('.hero_texts');
+    const hideThreshold = 100;
+    const showThreshold = 100;
+    let isHidden = false;
+
+    function updateHeader() {
+        const scrollY = window.scrollY;
+
+        if (!isHidden && scrollY > hideThreshold) {
+            hero_texts.classList.add('hero-texts-hidden');
+            isHidden = true;
+        }
+        else if (isHidden && scrollY <= showThreshold) {
+            hero_texts.classList.remove('hero-texts-hidden');
+            isHidden = false;
+        }
+    }
+
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            requestAnimationFrame(() => {
+                updateHeader();
+                ticking = false;
+            });
+            ticking = true;
+        }
+    });
+
     // 调整Canvas尺寸以匹配窗口大小
     function resizeCanvas(canvas) {
-        if (canvas) {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+        if (!canvas) return;
+
+        const dpr = window.devicePixelRatio || 1;
+        const rect = canvas.getBoundingClientRect();
+
+        // 设置显示尺寸（CSS像素）
+        canvas.style.width = window.innerWidth + 'px';
+        canvas.style.height = window.innerHeight + 'px';
+
+        // 设置实际绘制尺寸（考虑设备像素比）
+        canvas.width = window.innerWidth * dpr;
+        canvas.height = window.innerHeight * dpr;
+
+        // 缩放Canvas上下文以匹配高DPI
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+            ctx.scale(dpr, dpr);
         }
+
+        console.log(`Canvas尺寸: ${canvas.width} x ${canvas.height}, DPR: ${dpr}`);
     }
 
     // 获取CSS自定义属性值
@@ -131,8 +177,6 @@ document.addEventListener('DOMContentLoaded', async function () {
         requestAnimationFrame(() => animateGrid(mainCanvas));
     }
 
-    // ------------------ 初始化网格系统 ------------------
-
     function initGridSystem() {
         const mainCanvas = document.getElementById('grid-bg') || (() => {
             const c = document.createElement('canvas');
@@ -164,173 +208,14 @@ document.addEventListener('DOMContentLoaded', async function () {
         });
     }
 
-    // ========== 内容切换系统 ==========
-    const contentSystem = {
-        init: function () {
-            // 检查内容数据是否可用
-            if (typeof CONTENT_DATA === 'undefined' && typeof CONTENT_DATA_NORMAL === 'undefined') {
-                console.warn('内容数据未定义，使用默认内容');
-                this.contentSources = [this.getDefaultContent()];
-            } else {
-                this.contentSources = [];
-                if (typeof CONTENT_DATA !== 'undefined') this.contentSources.push(CONTENT_DATA);
-                if (typeof CONTENT_DATA_NORMAL !== 'undefined') this.contentSources.push(CONTENT_DATA_NORMAL);
-            }
-
-            this.elements = {
-                contentText: document.getElementById('content-text'),
-                categoryBtns: document.querySelectorAll('.toggle')
-            };
-
-            if (!this.elements.contentText) {
-                console.error('内容容器 #content-text 未找到');
-                return;
-            }
-
-            this.elements.categoryBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    if (btn.dataset.target) {
-                        this.switchContent(btn.dataset.target);
-                    } else {
-                        this.handleFunctionality(btn);
-                    }
-                });
-            });
-
-            // 默认显示首页内容
-            let defaultContent = this.findContent('Homepage') || this.findContent('homepage') || this.findContent('首页');
-            if (defaultContent) {
-                this.switchContent(Object.keys(defaultContent)[0]);
-            } else if (this.contentSources.length > 0 && this.contentSources[0]) {
-                const firstKey = Object.keys(this.contentSources[0])[0];
-                this.switchContent(firstKey);
-            } else {
-                this.elements.contentText.innerHTML = '<p class="error">暂无可用内容</p>';
-            }
-
-            this.initExpandableMenus();
-        },
-
-        // 查找内容
-        findContent: function (targetId) {
-            for (const source of this.contentSources) {
-                if (source && source[targetId]) {
-                    return { [targetId]: source[targetId] };
-                }
-            }
-            return null;
-        },
-
-        // 默认内容
-        getDefaultContent: function () {
-            return {
-                "Homepage": {
-                    "title": "欢迎",
-                    "content": "<p>这是默认首页内容。请定义 CONTENT_DATA 变量来提供实际内容。</p>"
-                },
-            };
-        },
-
-        switchContent: function (targetId) {
-            this.elements.categoryBtns.forEach(btn => {
-                if (btn.dataset.target) {
-                    btn.classList.toggle('active', btn.dataset.target === targetId);
-                }
-            });
-
-            let foundContent = null;
-            for (const source of this.contentSources) {
-                if (source && source[targetId]) {
-                    foundContent = source[targetId];
-                    break;
-                }
-            }
-
-            if (foundContent) {
-                const titleHtml = foundContent.title ? `<h1>${foundContent.title}</h1>` : '';
-                this.elements.contentText.innerHTML = `
-                    ${titleHtml}
-                    <div class="content-body">${foundContent.content}</div>
-                `;
-
-                // 处理新内容中的图片
-                this.processImagesInContent();
-            } else {
-                this.elements.contentText.innerHTML = `<p class="error">"${targetId}" 内容不存在。</p>`;
-            }
-        },
-
-        initExpandableMenus: function () {
-            const expandBtns = document.querySelectorAll('.expand-btn');
-            expandBtns.forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const menu = e.currentTarget.closest('.expandable-menu');
-                    menu.classList.toggle('expanded');
-                });
-            });
-
-            document.querySelectorAll('.sub-buttons .toggle').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    btn.closest('.expandable-menu').classList.remove('expanded');
-                });
-            });
-
-            document.addEventListener('click', (e) => {
-                if (!e.target.closest('.expandable-menu')) {
-                    document.querySelectorAll('.expandable-menu').forEach(menu => {
-                        menu.classList.remove('expanded');
-                    });
-                }
-            });
-        },
-
-        processImagesInContent: function () {
-            const images = this.elements.contentText.querySelectorAll('img[data-src]');
-            images.forEach(img => {
-                const src = img.getAttribute('data-src');
-                if (src) {
-                    progressiveLoad(img, src);
-                }
-            });
-        },
-
-        handleFunctionality: function (btn) {
-            console.log('功能按钮点击:', btn.textContent);
-            // 这里可以添加特殊功能按钮的处理逻辑
-        }
-    };
-
-    // ========== 平滑滚动功能 ==========
-    function initSmoothScroll() {
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                const href = this.getAttribute('href');
-                if (href === '#' || href.includes('.html')) return;
-
-                e.preventDefault();
-                const target = document.querySelector(href);
-                if (target) {
-                    window.scrollTo({
-                        top: target.offsetTop - 80,
-                        behavior: 'smooth'
-                    });
-                }
-            });
-        });
-    }
-
     // ========== 图片渐进式加载 ==========
     function progressiveLoad(imgEl, originalSrc) {
         const THUMB_SUFFIX = '-thumb';
-
         function getThumbPath(original) {
             const extPos = original.lastIndexOf('.');
             if (extPos === -1) return original + THUMB_SUFFIX;
             return original.slice(0, extPos) + THUMB_SUFFIX + original.slice(extPos);
         }
-
         const thumbSrc = getThumbPath(originalSrc);
         imgEl.classList.add('progressive');
         imgEl.src = thumbSrc;
@@ -350,27 +235,14 @@ document.addEventListener('DOMContentLoaded', async function () {
     const preloader = {
         getAllImagePaths: function () {
             const paths = new Set();
-
-            // 从内容数据中提取图片路径
-            contentSystem.contentSources.forEach(source => {
-                if (source) {
-                    Object.values(source).forEach(content => {
-                        const tempDiv = document.createElement('div');
-                        tempDiv.innerHTML = content.content;
-                        const images = tempDiv.querySelectorAll('img[data-src]');
-                        images.forEach(img => {
-                            const src = img.getAttribute('data-src');
-                            if (src) {
-                                paths.add(src);
-                                // 同时添加缩略图路径
-                                const thumbSrc = src.replace(/(\.\w+)$/, '-thumb$1');
-                                paths.add(thumbSrc);
-                            }
-                        });
-                    });
+            // 从页面中或全局对象中提取图片路径
+            document.querySelectorAll('img[data-src]').forEach(img => {
+                const src = img.getAttribute('data-src');
+                if (src) {
+                    paths.add(src);
+                    paths.add(src.replace(/(\.\w+)$/, '-thumb$1'));
                 }
             });
-
             return Array.from(paths);
         },
 
@@ -387,46 +259,49 @@ document.addEventListener('DOMContentLoaded', async function () {
         preloadAll: async function () {
             try {
                 const images = this.getAllImagePaths();
-                if (images.length === 0) {
-                    console.log('没有需要预加载的图片');
-                    return;
-                }
-
-                console.log('开始预加载图片:', images);
-                const loadPromises = images.map(src =>
-                    this.loadImage(src).catch(error => {
-                        console.warn('图片预加载失败:', error.message);
-                        return null;
-                    })
-                );
-
-                const results = await Promise.all(loadPromises);
-                const successful = results.filter(r => r !== null).length;
-                console.log(`图片预加载完成: ${successful}/${images.length} 成功`);
+                if (images.length === 0) return;
+                const loadPromises = images.map(src => this.loadImage(src).catch(e => null));
+                await Promise.all(loadPromises);
             } catch (error) {
-                console.warn('预加载过程出错:', error);
+                console.warn('图片预加载出错:', error);
             }
         }
     };
 
+    // ========== 平滑滚动 ==========
+    function initSmoothScroll() {
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (href === '#' || href.includes('.html')) return;
+                e.preventDefault();
+                const target = document.querySelector(href);
+                if (target) window.scrollTo({ top: target.offsetTop - 80, behavior: 'smooth' });
+            });
+        });
+    }
+
+    // ========== 按键跳转页面 ==========
+    // 例：PagePath 对象在另一个 JS 中定义
+    // const PagePath = { home: 'index.html', about: 'about.html', contact: 'contact.html' };
+    document.querySelectorAll('[data-page]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const key = btn.getAttribute('data-page');
+            if (typeof PagePath !== 'undefined' && PagePath[key]) {
+                window.location.href = PagePath[key];
+            } else {
+                console.warn('PagePath 未定义或键不存在:', key);
+            }
+        });
+    });
+
     // ========== 主初始化流程 ==========
     try {
-        // 1. 初始化网格背景
         initGridSystem();
-
-        // 2. 初始化内容系统
-        contentSystem.init();
-
-        // 3. 初始化平滑滚动
         initSmoothScroll();
-
-        // 4. 开始图片预加载（不阻塞主流程）
-        setTimeout(() => {
-            preloader.preloadAll().catch(console.error);
-        }, 1000);
-
+        setTimeout(() => { preloader.preloadAll(); }, 500);
         console.log('系统初始化完成');
     } catch (error) {
-        console.error('初始化过程中出错:', error);
+        console.error('初始化出错:', error);
     }
 });
