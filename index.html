@@ -5,260 +5,108 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>正在加载</title>
     <style>
-        /* 加载动画样式 */
-        .loader-wrap {
+        :root {
+            /* 背景渐变颜色配置 */
+            --bg-color-first: rgba(0, 0, 0, 1); /* 渐变起始颜色 */
+            --bg-color-mid: rgba(20, 20, 90, 1); /* 渐变中间颜色 */
+            --bg-color-end: rgba(36, 36, 150, 1); /* 渐变结束颜色 */
+            /* 进度条颜色配置 */
+            --progress-bar-color: rgb(255, 236, 130, 1); /* 进度条颜色 */
+            /* 边框和文字颜色配置 */
+            --border-color: rgb(255, 240, 150,0.5); /* 边框颜色 */
+            --text-color: rgba(255, 255, 255, 1); /* 文字颜色 */
+        }
+
+        body {
+            margin: 0;
+            font-family: sans-serif;
+        }
+
+        #loadingOverlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: #fff;
+            background: linear-gradient(145deg, var(--bg-color-first) 0%, var(--bg-color-mid) 50%, var(--bg-color-end) 100%);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            color: var(--text-color);
             z-index: 9999;
-            transition: opacity 0.5s ease;
         }
 
-        .loader-text {
-            margin-bottom: 20px;
-            font-size: 18px;
-            color: #333;
-        }
-
-        .progress-bar {
-            width: 300px;
-            height: 6px;
-            background: #f0f0f0;
-            border-radius: 3px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #4CAF50, #45a049);
-            width: 0%;
-            border-radius: 3px;
-            transition: width 0.3s ease;
-        }
-
-        .progress-percent {
-            margin-top: 10px;
-            font-size: 14px;
-            color: #666;
-        }
-
-        .loading-spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #4CAF50;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 20px;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* 错误信息样式 */
-        #errorMessage {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
+        #progressBarContainer {
             width: 100%;
-            height: 100%;
-            background: #fff;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 10000;
-        }
-
-        .error-icon {
-            font-size: 48px;
-            color: #ff4444;
-            margin-bottom: 20px;
-        }
-
-        .error-text {
-            font-size: 18px;
-            color: #333;
-            margin-bottom: 10px;
-        }
-
-        .error-code {
-            font-size: 16px;
-            color: #666;
-            font-family: monospace;
-        }
-
-        .retry-btn {
+            height: 5px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            overflow: hidden;
             margin-top: 20px;
-            padding: 10px 20px;
-            background: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
         }
 
-            .retry-btn:hover {
-                background: #45a049;
-            }
+        #progressBar {
+            height: 100%;
+            width: 0;
+            background: var(--progress-bar-color);
+            transition: width 0.2s linear;
+        }
     </style>
 </head>
 <body>
 
-    <!-- 加载动画 -->
-    <div class="loader-wrap">
-        <div class="loading-spinner"></div>
-        <div class="loader-text">正在加载页面，请稍候...</div>
-        <div class="progress-bar">
-            <div class="progress-fill" id="progressFill"></div>
+    <div id="loadingOverlay">
+        <div>加载中...</div>
+        <div id="progressBarContainer">
+            <div id="progressBar"></div>
         </div>
-        <div class="progress-percent" id="progressPercent">0%</div>
     </div>
 
-    <!-- 错误信息 -->
-    <div id="errorMessage">
-        <div class="error-icon">⚠️</div>
-        <div class="error-text">重定向失败！</div>
-        <div class="error-code">错误码：<span id="errorCode"></span></div>
-        <button class="retry-btn" onclick="window.location.reload()">重试</button>
+    <div id="errorMessage" style="display:none">
+        重定向失败！错误码：<span id="errorCode"></span>
     </div>
 
     <script>
-        // 当DOM内容加载完成后执行
         document.addEventListener('DOMContentLoaded', function () {
-            const progressFill = document.getElementById('progressFill');
-            const progressPercent = document.getElementById('progressPercent');
-            const loaderWrap = document.querySelector('.loader-wrap');
-            const errorMessage = document.getElementById('errorMessage');
-
-            // 从全局变量获取目标页面路径，默认为'./CN.html'
-            const targetPage = window.targetPage || './CN.html';
-
-            // 重定向状态控制变量
-            let redirectAttempted = false;
-            let redirectSucceeded = false;
+            const targetPage = window.targetPage || '/CN.html';
+            const progressBar = document.getElementById('progressBar');
             let progress = 0;
+            let iframeLoaded = false;
 
-            // 最小显示时间（毫秒）- 确保加载页面至少显示这么长时间
-            const MIN_DISPLAY_TIME = 2000; // 2秒
-            const startTime = Date.now();
+            // 创建 iframe 预加载目标页面
+            const preloadFrame = document.createElement('iframe');
+            preloadFrame.style.display = 'none';
+            preloadFrame.src = targetPage;
+            document.body.appendChild(preloadFrame);
 
-            // 进度条动画
-            const progressInterval = setInterval(updateProgress, 100);
+            preloadFrame.onload = function () {
+                iframeLoaded = true;
+            };
 
-            // 设置5秒超时计时器
-            const errorTimeout = setTimeout(showError, 5000);
+            preloadFrame.onerror = function () {
+                document.getElementById('loadingOverlay').style.display = 'none';
+                document.getElementById('errorMessage').style.display = 'block';
+                const errorCode = Math.floor(1000 + Math.random() * 9000);
+                document.getElementById('errorCode').textContent = `ERR_${errorCode}`;
+            };
 
-            // 监听页面可见性变化
-            document.addEventListener('visibilitychange', function () {
-                if (document.visibilityState === 'hidden') {
-                    redirectSucceeded = true;
-                    clearTimeout(errorTimeout);
+            // 模拟进度条
+            const progressInterval = setInterval(() => {
+                if (progress < 100) {
+                    progress += Math.random() * 5; // 每次随机增加
+                    if (progress > 100) progress = 100;
+                    progressBar.style.width = progress + '%';
+                }
+
+                // 当进度到 100% 且 iframe 已加载完成
+                if (progress >= 100 && iframeLoaded) {
                     clearInterval(progressInterval);
+                    window.location.replace(targetPage); // 跳转
                 }
-            });
-
-            // 执行重定向操作
-            redirectToTarget(targetPage);
-
-            // 更新进度条
-            function updateProgress() {
-                if (progress < 90) {
-                    progress += Math.random() * 10;
-                    if (progress > 90) progress = 90;
-
-                    progressFill.style.width = progress + '%';
-                    progressPercent.textContent = Math.round(progress) + '%';
-                }
-            }
-
-            // 完成进度条
-            function completeProgress() {
-                progress = 100;
-                progressFill.style.width = '100%';
-                progressPercent.textContent = '100%';
-
-                // 计算已经显示的时间
-                const elapsedTime = Date.now() - startTime;
-                const remainingTime = Math.max(0, MIN_DISPLAY_TIME - elapsedTime);
-
-                setTimeout(() => {
-                    loaderWrap.style.opacity = '0';
-                    setTimeout(() => {
-                        loaderWrap.style.display = 'none';
-                    }, 300);
-                }, remainingTime);
-            }
-
-            // 重定向核心函数
-            function redirectToTarget(target) {
-                redirectAttempted = true;
-
-                const basePath = window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '/');
-                const targetPath = basePath + target.replace(/^\//, '');
-
-                try {
-                    const preloadFrame = document.createElement('iframe');
-                    preloadFrame.style.display = 'none';
-                    preloadFrame.src = targetPath;
-                    document.body.appendChild(preloadFrame);
-
-                    preloadFrame.onload = function () {
-                        redirectSucceeded = true;
-                        clearTimeout(errorTimeout);
-                        clearInterval(progressInterval);
-                        completeProgress();
-
-                        // 延迟跳转，确保用户看到加载页面
-                        setTimeout(() => {
-                            window.location.replace(targetPath);
-                        }, remainingTime + 300); // 额外300ms用于淡出动画
-                    };
-
-                    preloadFrame.onerror = function () {
-                        // 同样确保错误页面至少显示最小时间
-                        const elapsedTime = Date.now() - startTime;
-                        const remainingTime = Math.max(0, MIN_DISPLAY_TIME - elapsedTime);
-
-                        setTimeout(showError, remainingTime);
-                    };
-                } catch (e) {
-                    const elapsedTime = Date.now() - startTime;
-                    const remainingTime = Math.max(0, MIN_DISPLAY_TIME - elapsedTime);
-
-                    setTimeout(showError, remainingTime);
-                }
-            }
-
-            // 错误处理函数
-            function showError() {
-                if (!redirectSucceeded && !redirectAttempted) {
-                    clearInterval(progressInterval);
-                    loaderWrap.style.display = 'none';
-                    errorMessage.style.display = 'flex';
-
-                    const errorCode = Math.floor(1000 + Math.random() * 9000);
-                    document.getElementById('errorCode').textContent = `ERR_${errorCode}`;
-                }
-            }
+            }, 100);
         });
     </script>
+
 </body>
 </html>
