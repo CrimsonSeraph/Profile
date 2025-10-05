@@ -69,7 +69,13 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            // 这里会优先使用 Worker 注入的 targetPage
             const targetPage = window.targetPage || '/CN.html';
+            if (!targetPage) {
+                console.error('未找到 targetPage，跳转可能出错');
+                return;
+            }
+
             const progressBar = document.getElementById('progressBar');
             let progress = 0;
             let iframeLoaded = false;
@@ -107,6 +113,7 @@
             }, 100);
         });
     </script>
+
 
 </body>
 </html>
