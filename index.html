@@ -11,9 +11,9 @@
             --bg-color-mid: rgba(20, 20, 90, 1); /* 渐变中间颜色 */
             --bg-color-end: rgba(36, 36, 150, 1); /* 渐变结束颜色 */
             /* 进度条颜色配置 */
-            --progress-bar-color: rgb(255, 236, 130, 1); /* 进度条颜色 */
+            --progress-bar-color: rgba(255, 255, 255, 1); /* 进度条颜色 */
             /* 边框和文字颜色配置 */
-            --border-color: rgb(255, 240, 150,0.5); /* 边框颜色 */
+            --border-color: rgba(255, 255, 255, 0.5); /* 边框颜色 */
             --text-color: rgba(255, 255, 255, 1); /* 文字颜色 */
         }
 
@@ -28,7 +28,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(145deg, var(--bg-color-first) 0%, var(--bg-color-mid) 50%, var(--bg-color-end) 100%);
+            background: var(--bg-color-mid);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -39,11 +39,9 @@
 
         #progressBarContainer {
             width: 100%;
-            height: 5px;
-            border: 1px solid var(--border-color);
+            height: 2px;
             border-radius: 10px;
             overflow: hidden;
-            margin-top: 20px;
         }
 
         #progressBar {
@@ -51,13 +49,15 @@
             width: 0;
             background: var(--progress-bar-color);
             transition: width 0.2s linear;
+            position: relative;
+            top: 50%;
+            transform: translateY(-50%)
         }
     </style>
 </head>
 <body>
 
     <div id="loadingOverlay">
-        <div>加载中...</div>
         <div id="progressBarContainer">
             <div id="progressBar"></div>
         </div>
@@ -113,7 +113,5 @@
             }, 100);
         });
     </script>
-
-
 </body>
 </html>

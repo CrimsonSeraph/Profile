@@ -13,8 +13,8 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     // 滚动时添加消失效果
     const hero_texts = document.querySelector('.hero_texts');
-    const hideThreshold = 100;
-    const showThreshold = 100;
+    const hideThreshold = 250;
+    const showThreshold = 250;
     let isHidden = false;
 
     function updateHeader() {
@@ -40,6 +40,16 @@ document.addEventListener('DOMContentLoaded', async function () {
             ticking = true;
         }
     });
+
+    // 预加载动画
+    setTimeout(function () {
+        document.querySelector('.loader-wrapper').classList.add('loaded');
+
+        // 动画完成后完全移除预加载器
+        setTimeout(function () {
+            document.querySelector('.loader-wrapper').style.display = 'none';
+        }, 1500);
+    }, 2000); // 2秒后开始过渡
 
     // 调整Canvas尺寸以匹配窗口大小
     function resizeCanvas(canvas) {
@@ -282,8 +292,6 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
 
     // ========== 按键跳转页面 ==========
-    // 例：PagePath 对象在另一个 JS 中定义
-    // const PagePath = { home: 'index.html', about: 'about.html', contact: 'contact.html' };
     document.querySelectorAll('[data-page]').forEach(btn => {
         btn.addEventListener('click', () => {
             const key = btn.getAttribute('data-page');
@@ -299,7 +307,14 @@ document.addEventListener('DOMContentLoaded', async function () {
     try {
         initGridSystem();
         initSmoothScroll();
-        setTimeout(() => { preloader.preloadAll(); }, 500);
+
+        setTimeout(async () => {
+            await preloader.preloadAll();
+            document.querySelectorAll('img[data-src]').forEach(img => {
+                progressiveLoad(img, img.getAttribute('data-src'));
+            });
+        }, 500);
+
         console.log('系统初始化完成');
     } catch (error) {
         console.error('初始化出错:', error);

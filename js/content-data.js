@@ -11,15 +11,9 @@ const CONTENT_DATA_NORMAL = {
     },
 }
 
-const ImagePath = {
-    avatar: "assets/avatar.png",
-    Logo_1: "assets/Logo-1.png",
-    Logo_2L: "assets/Logo-2L.png",
-    Logo_2R:"assets/Logo-2R.png",
-    Logo_B:"assets/Logo-B.png",
-    Logo_B_0 :"assets/Logo-B-0.png",
-    Logo_W:"assets/Logo-W.png",
-    Logo_W_0:"assets/Logo-W-0.png",
-    Logo_W_2L:"assets/Logo-W-2L.png",
-    Logo_W_2R: "assets/Logo-W-2R.png",
-}
+//使用格式< button data-page="page_name" > text</button >
+const PagePath = {
+    //home: 'index.html',
+    //about: 'about.html',
+    //contact: 'contact.html'
+};

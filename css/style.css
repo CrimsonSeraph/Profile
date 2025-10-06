@@ -22,7 +22,8 @@
     --grid-angle2: 60; /* 网格第二组线角度 */
     --grid-fade-duration: 2; /* 网格淡入淡出动画持续时间 */
     /* 整体样式配置 */
-    --text-color: rgba(224, 224, 224); /* 文字颜色 */
+    --text-color: rgba(225, 225, 225); /* 文字颜色 */
+    --special-text-color: rgb(255, 0, 0); /* 强调文字颜色 */
     --shadow-color: rgba(0, 0, 0, 0.1); /* 阴影色 */
     /* 导航样式配置 */
     --topbar-bg-color: rgba(26, 26, 46, 0.4); /* 顶部导航背景色 */
@@ -54,10 +55,22 @@ div {
 
 h3 {
     color: var(--text-color);
-    font-size: 60px;
+    font-size: 6vh;
     font-weight: 700;
     margin-bottom: 2px;
     position: relative;
+}
+
+h4 {
+    color: var(--text-color);
+    font-size: 2.5vh;
+    font-weight: 600;
+    margin-bottom: 2px;
+    position: relative;
+}
+
+p{
+
 }
 
 canvas {
@@ -69,6 +82,50 @@ canvas {
     display: block;
     z-index: -1; /* 确保在背景 */
     pointer-events: none; /* 不拦截点击事件 */
+}
+
+img.progressive {
+    filter: blur(10px);
+    opacity: 0.6;
+    transition: filter 0.5s ease, opacity 0.5s ease;
+}
+
+    img.progressive.loaded {
+        filter: blur(0);
+    }
+
+.title {
+    color: var(--special-text-color);
+    text-transform: uppercase;
+    font-size: 17px;
+    font-weight: 700;
+    position: relative;
+    padding-left: 25px;
+    margin-bottom: 2px;
+    display: inline-block;
+    font-family: "Saira";
+}
+
+.text {
+    width: 100%;
+    height: auto;
+    float: left;
+    margin-bottom: 17px;
+}
+
+ul {
+    margin: 0px;
+    list-style-type: none;
+}
+
+li {
+    margin: 0px;
+    float: left;
+    white-space: nowrap;
+}
+
+.special-text {
+    color: var(--special-text-color);
 }
 
 /* ------------------ 全局重置 ------------------ */
@@ -93,6 +150,64 @@ body {
     padding-top: 80px;
 }
 /* 页面主体样式 */
+
+/* 包装器样式 */
+.loader-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    overflow: hidden;
+}
+
+    .loader-wrapper::before,
+    .loader-wrapper::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        width: 100%;
+        height: 50%;
+        background: var(--bg-color-mid);
+        transition: transform 1.5s cubic-bezier(0.77, 0, 0.175, 1);
+    }
+
+    .loader-wrapper::before {
+        top: 0;
+        transform: translateY(0);
+    }
+
+    .loader-wrapper::after {
+        bottom: 0;
+        transform: translateY(0);
+    }
+
+.loader {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--text-color);
+    transform: translateY(-50%);
+    z-index: 1;
+    box-shadow: 0 0 10px var(--shadow-color);
+}
+
+.loader-wrapper.loaded::before {
+    transform: translateY(-100%);
+}
+
+.loader-wrapper.loaded::after {
+    transform: translateY(100%);
+}
+
+.loader-wrapper.loaded .loader {
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+/* 包装器样式 */
 
 /* 内容区域样式 */
 .wrap_all {
@@ -156,12 +271,14 @@ body {
     .menu ul {
         display: flex;
         list-style: none;
-        gap: 10px;
+        gap: 1vh;
+        flex-wrap: nowrap;
     }
 
     .menu li {
         margin: 0;
         padding: 0;
+        display: inline-block;
     }
 
     .menu a {
@@ -169,8 +286,8 @@ body {
         color: var(--text-color);
         font-family: 'Nunito', sans-serif;
         font-weight: 600;
-        font-size: 16px;
-        padding: 8px 16px;
+        font-size: 1.5vh;
+        padding: 0.5vh 1.5vh;
         border-radius: 4px;
         transition: all 0.3s ease;
         display: block;
@@ -200,27 +317,25 @@ body {
 /* 菜单 */
 
 /* ---- 一:首页 ---- */
-.logo {
-    flex:auto;
+
+.Logo {
+    position: absolute;
+    top: 50%;
+    transform: translateY(20%);
+    z-index: 0;
     flex-shrink: 0;
-    display: flex;
     align-items: center;
     justify-content: center;
     margin-left: 0;
     margin-right: 0;
 }
 
-    .logo img {
+    .Logo img {
         height: 50vh;
         width: auto;
-        max-height: 300px;
-        transition: transform 0.3s ease;
-        border-radius: 25%;
+        border-radius: 0%;
         object-fit: cover;
-    }
-
-    .logo:hover img {
-        transform: scale(1.05);
+        opacity: 0.7;
     }
 
 .hero_wrap {
@@ -233,6 +348,7 @@ body {
     transform: scale(1);
     opacity: 1;
     margin-bottom: 100px;
+    margin-bottom: 92px;
 }
 
 .overlay {
@@ -250,11 +366,11 @@ body {
     top: 50%;
     left: 0;
     right: 0;
-    transform: translateY(60%);
+    transform: translateY(30%);
     padding: 40px 20px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     max-width: 1200px;
     margin: 0 auto;
     box-shadow: 0 2px 10px var(--shadow-color);
@@ -277,43 +393,101 @@ body {
     }
 
 .text-content {
-    flex:auto;
+    flex: auto;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
+    text-align: center;
     text-align: left;
 }
 
 .name {
     flex: auto;
-    font-size: clamp(24px, 4vw, 36px);
+    font-size: 5vh;
     margin: 0 0 8px 0;
     font-weight: bold;
 }
 
 .subtitle {
     flex: auto;
-    font-size: clamp(14px, 2vw, 18px);
+    font-size: 1vh;
     color: var(--text-color);
     margin: 0;
 }
 /* ---- 一:首页 ---- */
 
 /* ---- 二:关于 ---- */
+.avatar {
+    flex: auto;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+    .avatar img {
+        height: 50vh;
+        width: auto;
+        max-height: 1000px;
+        transition: transform 0.3s ease;
+        border-radius: 0%;
+        object-fit: cover;
+        opacity: 1;
+    }
+
+    .avatar:hover img {
+        transform: scale(1.05);
+    }
+
 .about_wrap {
     width: 100%;
     height: auto;
     clear: both;
     float: left;
+    transform: translateY(30%);
     margin-bottom: 92px;
 }
-/* ---- 二:关于 ---- */
 
+.about_inner {
+    display: flex;
+}
+
+.leftpart {
+    width: 45%;
+    height: auto;
+    padding-right: 50px;
+    position: relative;
+}
+
+.rightpart {
+    width: 55%;
+    height: auto;
+}
+
+.about_title {
+    width: 100%;
+    height: auto;
+    float: left;
+    margin-bottom: 30px;
+}
+
+.info_list {
+    width: 100%;
+    height: auto;
+    clear: both;
+    float: left;
+    margin-bottom: 25px;
+}
+/* ---- 二:关于 ---- */
 /* 内容区域样式 */
 
 /* ------------------ 基础样式 ------------------ */
 
 /* ------------------ 网格背景 ------------------ */
+
 /* 网格背景Canvas样式 */
 #grid-bg {
     position: fixed; /* 固定定位 */
@@ -346,12 +520,12 @@ body {
 
     /* 菜单 */
     .menu ul {
-        gap: 5px;
+        gap: 1vh;
     }
 
     .menu a {
-        font-size: 14px;
-        padding: 6px 12px;
+        font-size: 1.5vh;
+        padding: 0.5vh 1.5vh;
     }
     /* 菜单 */
 
@@ -373,32 +547,15 @@ body {
 
     /* ------------------ 基础样式 ------------------ */
 
-    /* 内容区域样式 */
-    body {
-        padding-top: 120px;
-    }
-
-    .container {
-        padding: 0px 20px;
-    }
-
-    .inner {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    /* 内容区域样式 */
-
     /* 菜单 */
-    .menu {
-        margin: 15px 0 0 0;
-        width: 100%;
-        justify-content: flex-start;
+    .menu ul {
+        gap: 1vh;
     }
 
-        .menu ul {
-            flex-wrap: wrap;
-            gap: 8px;
-        }
+    .menu a {
+        font-size: 1.5vh;
+        padding: 0.5vh 1.5vh;
+    }
     /* 菜单 */
 
     /* ---- 一:首页 ---- */
@@ -447,18 +604,25 @@ body {
 
     /* ------------------ 基础样式 ------------------ */
 
-    /* ---- 一:首页 ---- */
-    .hero_texts {
-        padding: 20px 15px;
-        gap: 15px;
+    /* 菜单 */
+    .menu ul {
+        gap: 1vh;
     }
 
+    .menu a {
+        font-size: 1.5vh;
+        padding: 0.5vh 1.5vh;
+    }
+    /* 菜单 */
+
+    /* ---- 一:首页 ---- */
+
     .name {
-        font-size: 20px;
+        font-size: 5vh;
     }
 
     .subtitle {
-        font-size: 14px;
+        font-size: 1vh;
     }
 
     /* ---- 一:首页 ---- */
