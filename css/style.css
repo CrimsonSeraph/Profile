@@ -12,7 +12,7 @@
     --card-bg: rgba(255, 255, 255,0.2); /* 卡片背景色 */
     --card-border: rgba(255, 250, 0); /* 卡片边框色 */
     /* 网格样式配置 */
-    --grid-size: 200; /* 网格大小 */
+    --grid-size: clamp(100, 15vw, 200); /* 网格大小 */
     --grid-line-width: 2; /* 网格线宽度 */
     --grid-line-color: rgba(255, 192, 203,0.5); /* 网格线颜色 */
     --grid-highlight-color: rgba(255,255,255,0.2); /* 网格高亮颜色 */
@@ -50,6 +50,11 @@
     box-sizing: border-box;
 }
 
+html, body {
+    width: 100%;
+    overflow-x: hidden;
+}
+
 div {
     display: block;
     unicode-bidi: isolate;
@@ -57,17 +62,17 @@ div {
 
 h3 {
     color: var(--text-color);
-    font-size: 6vh;
+    font-size: clamp(2rem, 6vw, 6vh);
     font-weight: 700;
-    margin-bottom: 2px;
+    margin-bottom: clamp(0.5rem, 1vh, 2rem);
     position: relative;
 }
 
 h4 {
     color: var(--text-color);
-    font-size: 2.5vh;
+    font-size: clamp(1rem, 2.5vw, 2.5vh);
     font-weight: 600;
-    margin-bottom: 2px;
+    margin-bottom: clamp(0.5rem, 1vh, 2rem);
     position: relative;
 }
 
@@ -78,7 +83,7 @@ canvas {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100vw;
+    width: 100%;
     height: 100vh;
     display: block;
     z-index: -1; /* 确保在背景 */
@@ -98,11 +103,11 @@ img.progressive {
 .title {
     color: var(--special-text-color);
     text-transform: uppercase;
-    font-size: 17px;
+    font-size: clamp(12px, 1.2vw, 17px);
     font-weight: 700;
     position: relative;
-    padding-left: 25px;
-    margin-bottom: 2px;
+    padding-left: clamp(15px, 1.5vw, 25px);
+    margin-bottom: clamp(0.5rem, 1vh, 2rem);
     display: inline-block;
     font-family: "Saira";
 }
@@ -119,7 +124,7 @@ img.progressive {
     width: 100%;
     height: auto;
     float: left;
-    margin-bottom: 17px;
+    margin-bottom: clamp(0.5rem, 1.5vh, 1.5rem);
 }
 
 ul {
@@ -150,13 +155,13 @@ body {
     /* 背景渐变 */
     background: linear-gradient(145deg, var(--bg-color-first) 0%, var(--bg-color-mid) 50%, var(--bg-color-end) 100%);
     font-family: 'Nunito', sans-serif;
-    font-size: 16px;
+    font-size: clamp(14px, 1.6vw, 16px);
     line-height: 1.9;
     letter-spacing: 0.5px;
     word-wrap: break-word;
     font-weight: 400;
     color: var(--text-color);
-    padding-top: 80px;
+    padding-top: clamp(60px, 8vh, 80px);
 }
 /* 页面主体样式 */
 
@@ -221,6 +226,7 @@ body {
 /* 内容区域样式 */
 .wrap_all {
     box-sizing: border-box;
+    width: 100%;
 }
 
 .topbar {
@@ -237,7 +243,7 @@ body {
 }
 
 .mainpart {
-    padding: 15px 0px;
+    padding: clamp(10px, 1.5vh, 15px) 0px;
 }
 
 .container {
@@ -246,7 +252,7 @@ body {
     margin-left: auto;
     margin-right: auto;
     height: auto;
-    padding: 0px 40px;
+    padding: 0px clamp(20px, 3vw, 40px);
     position: relative;
     clear: both;
     -webkit-box-sizing: border-box;
@@ -261,7 +267,7 @@ body {
 }
 
 .section {
-    width: 100vh;
+    width: 100%;
     min-height: 100vh;
     height: auto;
     clear: both;
@@ -275,7 +281,7 @@ body {
 
 /* 菜单 */
 .menu {
-    margin: 0px 25px 0px 0px;
+    margin: 0px clamp(15px, 2vw, 25px) 0px 0px;
     flex-grow: 1;
     display: flex;
     justify-content: flex-end;
@@ -284,7 +290,7 @@ body {
     .menu ul {
         display: flex;
         list-style: none;
-        gap: 1vh;
+        gap: clamp(0.5vh, 1vh, 1.5vh);
         flex-wrap: nowrap;
     }
 
@@ -299,8 +305,8 @@ body {
         color: var(--text-color);
         font-family: 'Nunito', sans-serif;
         font-weight: 600;
-        font-size: 1.5vh;
-        padding: 0.5vh 1.5vh;
+        font-size: clamp(12px, 1.5vw, 1.5vh);
+        padding: clamp(0.3vh, 0.5vh, 0.8vh) clamp(1vh, 1.5vh, 2vh);
         border-radius: 4px;
         transition: all 0.3s ease;
         display: block;
@@ -334,7 +340,7 @@ body {
 .Logo {
     position: absolute;
     top: 50%;
-    transform: translateY(20%);
+    transform: translateY(clamp(15%, 20%, 25%));
     z-index: 0;
     flex-shrink: 0;
     align-items: center;
@@ -344,7 +350,7 @@ body {
 }
 
     .Logo img {
-        height: 50vh;
+        height: clamp(200px, 40vh, 500px);
         width: auto;
         border-radius: 0%;
         object-fit: cover;
@@ -360,12 +366,12 @@ body {
     background-size: cover;
     transform: scale(1);
     opacity: 1;
-    margin-bottom: 92px;
+    margin-bottom: clamp(60px, 8vh, 92px);
 }
 
 .overlay {
     position: absolute;
-    top: -1vh;
+    top: -2vh;
     bottom: 0px;
     left: 0px;
     right: 0px;
@@ -379,8 +385,8 @@ body {
     top: 50%;
     left: 0;
     right: 0;
-    transform: translateY(30%);
-    padding: 40px 20px;
+    transform: translateY(clamp(5vh, 10vh, 15vh));
+    padding: clamp(20px, 4vh, 40px) clamp(10px, 2vw, 20px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -417,14 +423,14 @@ body {
 
 .name {
     flex: auto;
-    font-size: 5vh;
-    margin: 0 0 8px 0;
+    font-size: clamp(2rem, 5vw, 5vh);
+    margin: 0 0 clamp(4px, 0.8vh, 8px) 0;
     font-weight: bold;
 }
 
 .subtitle {
     flex: auto;
-    font-size: 1vh;
+    font-size: clamp(10px, 1.2vw, 1.2vh);
     color: var(--text-color);
     margin: 0;
 }
@@ -442,7 +448,7 @@ body {
 }
 
     .avatar img {
-        height: 50vh;
+        height: clamp(200px, 40vw, 500px);
         width: auto;
         max-height: 1000px;
         transition: transform 0.3s ease;
@@ -456,17 +462,17 @@ body {
     }
 
 .about_wrap {
-    width: 100%;
+    width: 90%;
     height: auto;
     clear: both;
     float: left;
-    transform: translateY(30%);
-    margin-bottom: 92px;
+    transform: translateY(clamp(5vh, 10vh, 15vh)) translateX(clamp(5%, 10%, 20%));
+    margin-bottom: clamp(60px, 8vh, 92px);
 }
 
 .about_inner {
     display: flex;
-    transform: translateX(30%);
+    transform: translateX(clamp(1vh, 5vh, 10vh));
 }
 
 .leftpart {
@@ -478,16 +484,15 @@ body {
 }
 
 .rightpart {
-    width: 55%;
+    width: 45%;
     height: auto;
-    transform: translateX(30%);
 }
 
 .about_title {
     width: 100%;
     height: auto;
     float: left;
-    margin-bottom: 30px;
+    margin-bottom: clamp(20px, 3vh, 30px);
 }
 /* ---- 二:关于 ---- */
 
@@ -497,8 +502,8 @@ body {
     height: auto;
     clear: both;
     float: left;
-    margin-bottom: 42px;
-    transform: translateY(30%) translateX(30%);
+    margin-bottom: clamp(30px, 4vh, 42px);
+    transform: translateY(clamp(5vh, 10vh, 15vh)) translateX(clamp(5vh, 10vh, 15vh));
 }
 
 .team_list {
@@ -506,7 +511,7 @@ body {
     height: auto;
     clear: both;
     float: left;
-    padding-top: 83px;
+    padding-top: clamp(50px, 8vh, 83px);
     position: relative;
 }
 
@@ -517,7 +522,7 @@ body {
 
     .team_list li {
         width: 100%;
-        margin-bottom: 15px;
+        margin-bottom: clamp(10px, 1.5vh, 15px);
     }
 /* ---- 三:团队 ---- */
 
@@ -527,8 +532,8 @@ body {
     height: auto;
     clear: both;
     float: left;
-    margin-bottom: 42px;
-    transform: translateY(30%) translateX(30%);
+    margin-bottom: clamp(30px, 4vh, 42px);
+    transform: translateY(clamp(5vh, 10vh, 15vh)) translateX(clamp(5vh, 10vh, 15vh));
 }
 
 .moments_list {
@@ -536,7 +541,7 @@ body {
     height: auto;
     clear: both;
     float: left;
-    padding-top: 83px;
+    padding-top: clamp(50px, 8vh, 83px);
     position: relative;
 }
 
@@ -547,7 +552,7 @@ body {
 
     .moments_list li {
         width: 100%;
-        margin-bottom: 15px;
+        margin-bottom: clamp(10px, 1.5vh, 15px);
     }
 /* ---- 四:动态 ---- */
 
@@ -557,8 +562,8 @@ body {
     height: auto;
     clear: both;
     float: left;
-    margin-bottom: 42px;
-    transform: translateY(30%) translateX(30%);
+    margin-bottom: clamp(30px, 4vh, 42px);
+    transform: translateY(clamp(5vh, 10vh, 15vh)) translateX(clamp(5vh, 10vh, 15vh));
 }
 
 .comtact_inner {
@@ -566,7 +571,7 @@ body {
     height: auto;
     clear: both;
     float: left;
-    padding-top: 83px;
+    padding-top: clamp(50px, 8vh, 83px);
     position: relative;
 }
 
@@ -577,7 +582,7 @@ body {
 
     .comtact_inner li {
         width: 100%;
-        margin-bottom: 15px;
+        margin-bottom: clamp(10px, 1.5vh, 15px);
     }
 /* ---- 五:社交 ---- */
 
@@ -589,7 +594,8 @@ body {
     clear: both;
     float: left;
     background-color: var(--footer-color);
-    padding: 50px 0px;
+    padding: clamp(30px, 5vh, 50px) 0px;
+    justify-content: flex-start;
 }
 
 .footer_inner {
@@ -609,7 +615,7 @@ body {
     position: fixed; /* 固定定位 */
     left: 0; /* 左侧对齐 */
     top: 0; /* 顶部对齐 */
-    width: 100vw; /* 宽度为视口宽度 */
+    width: 100%; /* 宽度为视口宽度 */
     height: 100vh; /* 高度为视口高度 */
     z-index: -1; /* 设置堆叠顺序 */
     pointer-events: none; /* 禁止鼠标事件 */
@@ -618,173 +624,311 @@ body {
 
 /* ------------------ 网格背景 ------------------ */
 
-/* ------------------ 响应式设计 ------------------ */
+/* ------------------ 响应式设置 ------------------ */
 
-/* 大屏幕设备适配 (1200px以上) */
+/* 超大屏幕 (1200px以上) */
 @media (min-width: 1200px) {
     .container {
         max-width: 1400px;
-        padding: 0 60px;
-    }
-
-    .name {
-        font-size: 6vh;
-    }
-
-    .menu a {
-        font-size: 1.8vh;
-        padding: 0.8vh 2vh;
-    }
-}
-
-/* 中等屏幕设备适配 (平板横屏) */
-@media (max-width: 1199px) and (min-width: 992px) {
-    .container {
-        max-width: 1140px;
-        padding: 0 40px;
-    }
-
-    .avatar img,
-    .Logo img {
-        height: 40vh;
-    }
-
-    .name {
-        font-size: 5vh;
-    }
-
-    h3 {
-        font-size: 5vh;
-    }
-}
-
-/* 小屏幕设备适配 (平板竖屏) */
-@media (max-width: 991px) and (min-width: 768px) {
-    .container {
-        max-width: 960px;
-        padding: 0 30px;
-    }
-
-    .about_inner {
-        flex-direction: column;
-    }
-
-    .leftpart,
-    .rightpart {
-        width: 100%;
-    }
-
-    .leftpart {
-        margin-bottom: 40px;
-        justify-content: center;
-    }
-
-    .avatar img,
-    .Logo img {
-        height: 35vh;
-    }
-
-    .name {
-        font-size: 4.5vh;
-    }
-
-    h3 {
-        font-size: 4.5vh;
-    }
-
-    .menu ul {
-        gap: 0.8vh;
-    }
-
-    .menu a {
-        font-size: 1.4vh;
-        padding: 0.4vh 1.2vh;
-    }
-}
-
-/* 超小屏幕设备适配 (手机) */
-@media (max-width: 767px) {
-    .container {
-        padding: 0 20px;
-    }
-
-    body {
-        padding-top: 60px;
-    }
-
-    .about_inner {
-        flex-direction: column;
-    }
-
-    .leftpart,
-    .rightpart {
-        width: 100%;
-    }
-
-    .leftpart {
-        margin-bottom: 30px;
-        justify-content: center;
-    }
-
-    .avatar img,
-    .Logo img {
-        height: 25vh;
     }
 
     .hero_texts {
-        flex-direction: column;
-        text-align: center;
-        padding: 20px;
-        transform: translateY(25%);
+        transform: translateY(clamp(8vh, 12vh, 18vh));
+    }
+}
+
+/* 中等屏幕 (992px - 1199px) */
+@media (min-width: 992px) and (max-width: 1199px) {
+    .container {
+        max-width: 1100px;
+        padding: 0px clamp(15px, 2.5vw, 30px);
     }
 
-    .text-content {
+    .hero_texts {
+        transform: translateY(clamp(6vh, 9vh, 12vh));
+        padding: clamp(15px, 3vh, 30px) clamp(8px, 1.5vw, 15px);
+    }
+
+    .Logo img {
+        height: clamp(180px, 35vh, 400px);
+    }
+
+    .avatar img {
+        height: clamp(180px, 35vw, 400px);
+    }
+
+    .about_inner {
+        transform: translateX(clamp(3vh, 6vh, 9vh));
+    }
+
+    .about_wrap,
+    .team,
+    .moments,
+    .contact {
+        transform: translateY(clamp(6vh, 9vh, 12vh)) translateX(clamp(3vh, 6vh, 9vh));
+    }
+
+    h3 {
+        font-size: clamp(1.8rem, 5vw, 5vh);
+    }
+
+    h4 {
+        font-size: clamp(0.9rem, 2.2vw, 2.2vh);
+    }
+}
+
+/* 平板横屏 (768px - 991px) */
+@media (min-width: 768px) and (max-width: 991px) {
+    .container {
+        max-width: 900px;
+        padding: 0px clamp(12px, 2vw, 25px);
+    }
+
+    .hero_texts {
+        transform: translateY(clamp(4vh, 6vh, 8vh));
+        padding: clamp(12px, 2.5vh, 25px) clamp(6px, 1vw, 12px);
+        flex-direction: column;
         text-align: center;
-        order: 2;
     }
 
     .Logo {
         position: relative;
         transform: none;
-        margin-bottom: 20px;
-        order: 1;
+        margin-bottom: clamp(15px, 3vh, 25px);
     }
 
-    .name {
-        font-size: 3.5vh;
-        text-align: center;
+        .Logo img {
+            height: clamp(150px, 30vh, 300px);
+        }
+
+    .about_inner {
+        flex-direction: column;
     }
 
-    .subtitle {
-        font-size: 1.2vh;
-        text-align: center;
+    .leftpart,
+    .rightpart {
+        width: 80vw;
+        transform: none !important;
+    }
+
+    .leftpart {
+        margin-bottom: clamp(20px, 4vh, 30px);
+        justify-content: center;
+    }
+
+    .avatar img {
+        height: clamp(150px, 30vw, 300px);
+    }
+
+    .about_wrap,
+    .team,
+    .moments,
+    .contact {
+        transform: translateY(clamp(4vh, 6vh, 8vh)) translateX(0);
+        margin-bottom: clamp(20px, 3vh, 25px);
+    }
+
+    .menu ul {
+        gap: clamp(0.3vh, 0.8vh, 1vh);
+    }
+
+    .menu a {
+        font-size: clamp(11px, 1.3vw, 1.3vh);
+        padding: clamp(0.2vh, 0.4vh, 0.6vh) clamp(0.8vh, 1.2vh, 1.5vh);
     }
 
     h3 {
-        font-size: 3.5vh;
+        font-size: clamp(1.6rem, 4.5vw, 4.5vh);
+        margin-bottom: clamp(0.4rem, 0.8vh, 1.5rem);
     }
 
     h4 {
-        font-size: 2vh;
+        font-size: clamp(0.8rem, 2vw, 2vh);
+        margin-bottom: clamp(0.4rem, 0.8vh, 1.5rem);
+    }
+
+    .title {
+        font-size: clamp(11px, 1.1vw, 15px);
+        padding-left: clamp(12px, 1.2vw, 20px);
+    }
+}
+
+/* 手机竖屏 (576px - 767px) */
+@media (min-width: 576px) and (max-width: 767px) {
+    body {
+        padding-top: clamp(50px, 7vh, 70px);
+        font-size: clamp(13px, 1.4vw, 15px);
+    }
+
+    .container {
+        max-width: 100%;
+        padding: 0px clamp(10px, 1.5vw, 20px);
+    }
+
+    .hero_texts {
+        transform: translateY(clamp(3vh, 4vh, 5vh));
+        padding: clamp(10px, 2vh, 20px) clamp(5px, 0.8vw, 10px);
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .text-content {
+        text-align: center;
+    }
+
+    .Logo {
+        position: relative;
+        transform: none;
+        margin-bottom: clamp(12px, 2.5vh, 20px);
+    }
+
+        .Logo img {
+            height: clamp(120px, 25vh, 250px);
+        }
+
+    .name {
+        font-size: clamp(1.5rem, 4vw, 4vh);
+    }
+
+    .subtitle {
+        font-size: clamp(9px, 1vw, 1.1vh);
+    }
+
+    .about_inner {
+        flex-direction: column;
+        transform: translateX(0);
+    }
+
+    .leftpart,
+    .rightpart {
+        width: 100%;
+        transform: none !important;
+    }
+
+    .leftpart {
+        margin-bottom: clamp(15px, 3vh, 25px);
+        justify-content: center;
+    }
+
+    .avatar img {
+        height: clamp(120px, 25vw, 250px);
+    }
+
+    .about_wrap,
+    .team,
+    .moments,
+    .contact {
+        transform: translateY(clamp(3vh, 4vh, 5vh)) translateX(0);
+        margin-bottom: clamp(15px, 2.5vh, 20px);
     }
 
     .menu {
-        margin: 0 15px 0 0;
+        /*        margin-right: clamp(10px, 1.5vw, 20px);*/
     }
 
         .menu ul {
-            gap: 0.5vh;
+            gap: clamp(0.2vh, 0.5vh, 0.8vh);
         }
 
         .menu a {
-            font-size: 1.2vh;
-            padding: 0.3vh 1vh;
+            font-size: clamp(10px, 1.1vw, 1.1vh);
+            padding: clamp(0.15vh, 0.3vh, 0.5vh) clamp(0.6vh, 0.9vh, 1.2vh);
         }
 
-    .team_list,
-    .moments_list,
-    .comtact_inner {
-        padding-top: 50px;
+    h3 {
+        font-size: clamp(1.4rem, 4vw, 4vh);
+        margin-bottom: clamp(0.3rem, 0.6vh, 1rem);
+    }
+
+    h4 {
+        font-size: clamp(0.7rem, 1.8vw, 1.8vh);
+        margin-bottom: clamp(0.3rem, 0.6vh, 1rem);
+    }
+
+    .title {
+        font-size: clamp(10px, 1vw, 14px);
+        padding-left: clamp(10px, 1vw, 18px);
+        margin-bottom: clamp(0.3rem, 0.6vh, 1rem);
+    }
+
+    .text {
+        margin-bottom: clamp(0.3rem, 1vh, 1rem);
+    }
+
+    .mainpart {
+        padding: clamp(8px, 1.2vh, 12px) 0px;
+    }
+}
+
+/* 小手机竖屏 (小于576px) */
+@media (max-width: 575px) {
+    body {
+        padding-top: clamp(45px, 6vh, 60px);
+        font-size: clamp(12px, 1.2vw, 14px);
+        line-height: 1.7;
+    }
+
+    .container {
+        max-width: 100%;
+        padding: 0px clamp(8px, 1.2vw, 15px);
+    }
+
+    .hero_texts {
+        transform: translateY(clamp(2vh, 3vh, 4vh));
+        padding: clamp(8px, 1.5vh, 15px) clamp(4px, 0.6vw, 8px);
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .text-content {
+        text-align: center;
+    }
+
+    .Logo {
+        position: relative;
+        transform: none;
+        margin-bottom: clamp(10px, 2vh, 15px);
+    }
+
+        .Logo img {
+            height: clamp(100px, 20vh, 200px);
+        }
+
+    .name {
+        font-size: clamp(1.2rem, 3.5vw, 3.5vh);
+        margin-bottom: clamp(3px, 0.5vh, 6px);
+    }
+
+    .subtitle {
+        font-size: clamp(8px, 0.9vw, 1vh);
+    }
+
+    .about_inner {
+        flex-direction: column;
+        transform: translateX(0);
+    }
+
+    .leftpart,
+    .rightpart {
+        width: 100%;
+        transform: none !important;
+    }
+
+    .leftpart {
+        margin-bottom: clamp(12px, 2.5vh, 20px);
+        justify-content: center;
+    }
+
+    .avatar img {
+        height: clamp(100px, 20vw, 200px);
+    }
+
+    .about_wrap,
+    .team,
+    .moments,
+    .contact {
+        transform: translateY(clamp(2vh, 3vh, 4vh)) translateX(5vw);
+        margin-bottom: clamp(12px, 2vh, 18px);
     }
 
     .inner {
@@ -792,118 +936,122 @@ body {
         align-items: flex-start;
     }
 
-    .footer_inner {
-        flex-direction: column;
-        gap: 20px;
-        text-align: center;
+    .menu {
+        margin: clamp(5px, 1vh, 8px) 0 0 0;
+        width: 100%;
     }
 
-    .section {
-        width: 100%;
-        min-height: auto;
-        padding: 60px 0;
+        .menu ul {
+            flex-wrap: wrap;
+            gap: clamp(0.1vh, 0.3vh, 0.5vh);
+        }
+
+        .menu a {
+            font-size: clamp(9px, 1vw, 1vh);
+            padding: clamp(0.1vh, 0.2vh, 0.3vh) clamp(0.4vh, 0.6vh, 0.8vh);
+        }
+
+    h3 {
+        font-size: clamp(1.2rem, 3.5vw, 3.5vh);
+        margin-bottom: clamp(0.2rem, 0.4vh, 0.8rem);
+    }
+
+    h4 {
+        font-size: clamp(0.6rem, 1.6vw, 1.6vh);
+        margin-bottom: clamp(0.2rem, 0.4vh, 0.8rem);
+    }
+
+    .title {
+        font-size: clamp(9px, 0.9vw, 12px);
+        padding-left: clamp(8px, 0.8vw, 15px);
+        margin-bottom: clamp(0.2rem, 0.4vh, 0.8rem);
+    }
+
+    .text {
+        margin-bottom: clamp(0.2rem, 0.8vh, 0.8rem);
+    }
+
+    .mainpart {
+        padding: clamp(6px, 1vh, 10px) 0px;
+    }
+
+    .footer_inner {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: clamp(10px, 2vh, 15px);
+    }
+}
+
+/* 横屏设备 */
+@media (max-height: 500px) and (orientation: landscape) {
+    body {
+        padding-top: clamp(40px, 5vh, 50px);
+    }
+
+    .hero_texts {
+        transform: translateY(clamp(1vh, 2vh, 3vh));
+        padding: clamp(5px, 1vh, 10px) clamp(3px, 0.5vw, 6px);
+    }
+
+    .Logo img {
+        height: clamp(80px, 15vh, 150px);
+    }
+
+    .name {
+        font-size: clamp(1rem, 3vw, 3vh);
+    }
+
+    .subtitle {
+        font-size: clamp(7px, 0.8vw, 0.9vh);
     }
 
     .about_wrap,
     .team,
     .moments,
     .contact {
-        transform: translateY(15%);
-        margin-bottom: 30px;
-    }
-}
-
-/* 超小屏幕设备适配 (小手机) */
-@media (max-width: 480px) {
-    .container {
-        padding: 0 15px;
+        transform: translateY(clamp(1vh, 2vh, 3vh)) translateX(0);
     }
 
-    .name {
-        font-size: 3vh;
-    }
-
-    h3 {
-        font-size: 3vh;
-    }
-
-    h4 {
-        font-size: 1.8vh;
-    }
-
-    .title {
-        font-size: 14px;
-        padding-left: 15px;
-    }
-
-    .avatar img,
-    .Logo img {
-        height: 20vh;
-    }
-
-    .menu a {
-        font-size: 1vh;
-        padding: 0.2vh 0.8vh;
-    }
-
-    .team_list,
-    .moments_list,
-    .comtact_inner {
-        padding-top: 30px;
-    }
-
-        .team_list li,
-        .moments_list li,
-        .comtact_inner li {
-            margin-bottom: 10px;
-        }
-}
-
-/* 横屏手机适配 */
-@media (max-height: 500px) and (orientation: landscape) {
-    .hero_texts {
-        transform: translateY(15%);
-        padding: 20px;
-    }
-
-    .avatar img,
-    .Logo img {
-        height: 40vh;
-    }
-
-    .name {
-        font-size: 4vh;
+    .avatar img {
+        height: clamp(80px, 15vw, 150px);
     }
 
     .section {
-        min-height: 120vh;
+        min-height: 80vh;
     }
 }
 
-/* 高分辨率屏幕适配 */
-@media (min-resolution: 192dpi) {
-    .menu a {
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
+/* 高DPI屏幕优化 */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .menu a:after {
+        height: 1px;
+    }
+
+    .grid-line-width {
+        --grid-line-width: 1;
     }
 }
 
-/* 深色模式适配 */
+/* 深色模式支持 */
 @media (prefers-color-scheme: dark) {
     :root {
-        --bg-color-first: rgba(0, 0, 0, 1);
-        --bg-color-mid: rgba(15, 15, 30, 1);
-        --text-color: rgba(240, 240, 240, 1);
+        --text-color: rgba(240, 240, 240);
+        --shadow-color: rgba(0, 0, 0, 0.2);
     }
 }
 
-/* 运动偏好适配 (减少动画) */
+/* 减少动画（对于偏好减少动画的用户） */
 @media (prefers-reduced-motion: reduce) {
     * {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
     }
+
+    .loader-wrapper::before,
+    .loader-wrapper::after {
+        transition-duration: 0.5s;
+    }
 }
 
-/* ------------------ 响应式设计 ------------------ */
+/* ------------------ 响应式设置 ------------------ */
