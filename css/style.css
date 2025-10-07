@@ -31,6 +31,8 @@
     --menu-after-line-color: rgba(255, 250, 0); /* 菜单悬停下划线颜色 */
     /* 首页样式配置 */
     --hero-bg-filter: rgba(2, 3, 18, 0.3); /* 首页背景滤镜 */
+    /* 页脚样式配置 */
+    --footer-color: rgba(20, 20, 90, 0.8); /* 页脚背景色 */
 }
 /* 根元素自定义属性定义 */
 
@@ -69,8 +71,7 @@ h4 {
     position: relative;
 }
 
-p{
-
+p {
 }
 
 canvas {
@@ -104,6 +105,14 @@ img.progressive {
     margin-bottom: 2px;
     display: inline-block;
     font-family: "Saira";
+}
+
+.title_holder {
+    width: 100%;
+    height: auto;
+    clear: both;
+    float: left;
+    text-align: left;
 }
 
 .text {
@@ -258,6 +267,10 @@ body {
     clear: both;
     float: left;
 }
+
+    .section.end {
+        min-height: 80vh;
+    }
 /* 内容区域样式 */
 
 /* 菜单 */
@@ -347,18 +360,18 @@ body {
     background-size: cover;
     transform: scale(1);
     opacity: 1;
-    margin-bottom: 100px;
     margin-bottom: 92px;
 }
 
 .overlay {
     position: absolute;
-    top: 0px;
+    top: -1vh;
     bottom: 0px;
     left: 0px;
     right: 0px;
     background-color: var(--hero-bg-filter);
     z-index: 1;
+    height: 100%;
 }
 
 .hero_texts {
@@ -458,8 +471,9 @@ body {
 .leftpart {
     width: 45%;
     height: auto;
-    padding-right: 50px;
     position: relative;
+    display: flex;
+    align-items: center;
 }
 
 .rightpart {
@@ -473,15 +487,45 @@ body {
     float: left;
     margin-bottom: 30px;
 }
+/* ---- 二:关于 ---- */
 
-.info_list {
+/* ---- 三:团队 ---- */
+.team {
+}
+/* ---- 三:团队 ---- */
+
+/* ---- 四:动态 ---- */
+.moments {
+}
+
+.moments_list {
+}
+/* ---- 四:动态 ---- */
+
+/* ---- 五:社交 ---- */
+.contact {
+}
+
+.comtact_inner {
+}
+/* ---- 五:社交 ---- */
+
+/* ---- 六:页脚 ---- */
+.footer {
     width: 100%;
     height: auto;
     clear: both;
     float: left;
-    margin-bottom: 25px;
+    background-color: var(--footer-color);
+    padding: 50px 0px;
 }
-/* ---- 二:关于 ---- */
+
+.footer_inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+/* ---- 六:页脚 ---- */
 /* 内容区域样式 */
 
 /* ------------------ 基础样式 ------------------ */
