@@ -466,7 +466,7 @@ body {
     height: auto;
     clear: both;
     float: left;
-    transform: translateY(clamp(5vh, 10vh, 15vh)) translateX(clamp(5%, 10%, 20%));
+    transform: translateY(clamp(5vh, 10vh, 15vh)) translateX(clamp(1%, 5%, 10%));
     margin-bottom: clamp(60px, 8vh, 92px);
 }
 
