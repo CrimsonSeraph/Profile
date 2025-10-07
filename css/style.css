@@ -32,7 +32,7 @@
     /* 首页样式配置 */
     --hero-bg-filter: rgba(2, 3, 18, 0.3); /* 首页背景滤镜 */
     /* 页脚样式配置 */
-    --footer-color: rgba(20, 20, 90, 0.8); /* 页脚背景色 */
+    --footer-color: rgba(0, 0, 30, 0.9); /* 页脚背景色 */
 }
 /* 根元素自定义属性定义 */
 
@@ -261,7 +261,7 @@ body {
 }
 
 .section {
-    width: 100%;
+    width: 100vh;
     min-height: 100vh;
     height: auto;
     clear: both;
@@ -269,7 +269,7 @@ body {
 }
 
     .section.end {
-        min-height: 80vh;
+        min-height: 75vh;
     }
 /* 内容区域样式 */
 
@@ -466,6 +466,7 @@ body {
 
 .about_inner {
     display: flex;
+    transform: translateX(30%);
 }
 
 .leftpart {
@@ -479,6 +480,7 @@ body {
 .rightpart {
     width: 55%;
     height: auto;
+    transform: translateX(30%);
 }
 
 .about_title {
@@ -491,27 +493,97 @@ body {
 
 /* ---- 三:团队 ---- */
 .team {
+    width: 100%;
+    height: auto;
+    clear: both;
+    float: left;
+    margin-bottom: 42px;
+    transform: translateY(30%) translateX(30%);
 }
+
+.team_list {
+    width: 100%;
+    height: auto;
+    clear: both;
+    float: left;
+    padding-top: 83px;
+    position: relative;
+}
+
+    .team_list ul {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .team_list li {
+        width: 100%;
+        margin-bottom: 15px;
+    }
 /* ---- 三:团队 ---- */
 
 /* ---- 四:动态 ---- */
 .moments {
+    width: 100%;
+    height: auto;
+    clear: both;
+    float: left;
+    margin-bottom: 42px;
+    transform: translateY(30%) translateX(30%);
 }
 
 .moments_list {
+    width: 100%;
+    height: auto;
+    clear: both;
+    float: left;
+    padding-top: 83px;
+    position: relative;
 }
+
+    .moments_list ul {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .moments_list li {
+        width: 100%;
+        margin-bottom: 15px;
+    }
 /* ---- 四:动态 ---- */
 
 /* ---- 五:社交 ---- */
 .contact {
+    width: 100%;
+    height: auto;
+    clear: both;
+    float: left;
+    margin-bottom: 42px;
+    transform: translateY(30%) translateX(30%);
 }
 
 .comtact_inner {
+    width: 100%;
+    height: auto;
+    clear: both;
+    float: left;
+    padding-top: 83px;
+    position: relative;
 }
+
+    .comtact_inner ul {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .comtact_inner li {
+        width: 100%;
+        margin-bottom: 15px;
+    }
 /* ---- 五:社交 ---- */
 
 /* ---- 六:页脚 ---- */
 .footer {
+    box-shadow: inset 0 2px 0 var(--shadow-color);
     width: 100%;
     height: auto;
     clear: both;
@@ -548,131 +620,290 @@ body {
 
 /* ------------------ 响应式设计 ------------------ */
 
-/* 中等屏幕设备适配 */
-@media (max-width: 1024px) {
-    /* ------------------ 根元素 ------------------ */
-
-    /* 根元素自定义属性定义 */
-    :root {
-        --grid-size: 200;
+/* 大屏幕设备适配 (1200px以上) */
+@media (min-width: 1200px) {
+    .container {
+        max-width: 1400px;
+        padding: 0 60px;
     }
-    /* 根元素自定义属性定义 */
 
-    /* ------------------ 根元素 ------------------ */
-
-    /* ------------------ 基础样式 ------------------ */
-
-    /* 菜单 */
-    .menu ul {
-        gap: 1vh;
+    .name {
+        font-size: 6vh;
     }
 
     .menu a {
-        font-size: 1.5vh;
-        padding: 0.5vh 1.5vh;
+        font-size: 1.8vh;
+        padding: 0.8vh 2vh;
     }
-    /* 菜单 */
-
-    /* ------------------ 基础样式 ------------------ */
 }
-/* 中等屏幕设备适配 */
 
-/* 平板设备适配 */
-@media (max-width: 768px) {
-    /* ------------------ 根元素 ------------------ */
-
-    /* 根元素自定义属性定义 */
-    :root {
-        --grid-size: 150;
+/* 中等屏幕设备适配 (平板横屏) */
+@media (max-width: 1199px) and (min-width: 992px) {
+    .container {
+        max-width: 1140px;
+        padding: 0 40px;
     }
-    /* 根元素自定义属性定义 */
 
-    /* ------------------ 根元素 ------------------ */
+    .avatar img,
+    .Logo img {
+        height: 40vh;
+    }
 
-    /* ------------------ 基础样式 ------------------ */
+    .name {
+        font-size: 5vh;
+    }
 
-    /* 菜单 */
+    h3 {
+        font-size: 5vh;
+    }
+}
+
+/* 小屏幕设备适配 (平板竖屏) */
+@media (max-width: 991px) and (min-width: 768px) {
+    .container {
+        max-width: 960px;
+        padding: 0 30px;
+    }
+
+    .about_inner {
+        flex-direction: column;
+    }
+
+    .leftpart,
+    .rightpart {
+        width: 100%;
+    }
+
+    .leftpart {
+        margin-bottom: 40px;
+        justify-content: center;
+    }
+
+    .avatar img,
+    .Logo img {
+        height: 35vh;
+    }
+
+    .name {
+        font-size: 4.5vh;
+    }
+
+    h3 {
+        font-size: 4.5vh;
+    }
+
     .menu ul {
-        gap: 1vh;
+        gap: 0.8vh;
     }
 
     .menu a {
-        font-size: 1.5vh;
-        padding: 0.5vh 1.5vh;
+        font-size: 1.4vh;
+        padding: 0.4vh 1.2vh;
     }
-    /* 菜单 */
+}
 
-    /* ---- 一:首页 ---- */
+/* 超小屏幕设备适配 (手机) */
+@media (max-width: 767px) {
+    .container {
+        padding: 0 20px;
+    }
+
+    body {
+        padding-top: 60px;
+    }
+
+    .about_inner {
+        flex-direction: column;
+    }
+
+    .leftpart,
+    .rightpart {
+        width: 100%;
+    }
+
+    .leftpart {
+        margin-bottom: 30px;
+        justify-content: center;
+    }
+
+    .avatar img,
+    .Logo img {
+        height: 25vh;
+    }
+
     .hero_texts {
-        flex-direction: column-reverse;
+        flex-direction: column;
         text-align: center;
-        padding: 30px 20px;
-        gap: 20px;
+        padding: 20px;
+        transform: translateY(25%);
     }
-
-        .hero_texts > div:first-of-type {
-            text-align: center;
-        }
 
     .text-content {
         text-align: center;
         order: 2;
     }
 
-    .logo {
-        margin-left: 0;
-        margin-bottom: 0;
+    .Logo {
+        position: relative;
+        transform: none;
+        margin-bottom: 20px;
         order: 1;
     }
 
-        .logo img {
-            height: clamp(50px, 15vw, 80px);
-        }
-    /* ---- 一:首页 ---- */
-
-    /* ------------------ 基础样式 ------------------ */
-}
-/* 平板设备适配 */
-
-/* 手机设备适配 */
-@media (max-width: 425px) {
-    /* ------------------ 根元素 ------------------ */
-
-    /* 根元素自定义属性定义 */
-    :root {
-        --grid-size: 100; /* 调整网格大小 */
-    }
-    /* 根元素自定义属性定义 */
-
-    /* ------------------ 根元素 ------------------ */
-
-    /* ------------------ 基础样式 ------------------ */
-
-    /* 菜单 */
-    .menu ul {
-        gap: 1vh;
-    }
-
-    .menu a {
-        font-size: 1.5vh;
-        padding: 0.5vh 1.5vh;
-    }
-    /* 菜单 */
-
-    /* ---- 一:首页 ---- */
-
     .name {
-        font-size: 5vh;
+        font-size: 3.5vh;
+        text-align: center;
     }
 
     .subtitle {
-        font-size: 1vh;
+        font-size: 1.2vh;
+        text-align: center;
     }
 
-    /* ---- 一:首页 ---- */
+    h3 {
+        font-size: 3.5vh;
+    }
 
-    /* ------------------ 基础样式 ------------------ */
+    h4 {
+        font-size: 2vh;
+    }
+
+    .menu {
+        margin: 0 15px 0 0;
+    }
+
+        .menu ul {
+            gap: 0.5vh;
+        }
+
+        .menu a {
+            font-size: 1.2vh;
+            padding: 0.3vh 1vh;
+        }
+
+    .team_list,
+    .moments_list,
+    .comtact_inner {
+        padding-top: 50px;
+    }
+
+    .inner {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .footer_inner {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+    }
+
+    .section {
+        width: 100%;
+        min-height: auto;
+        padding: 60px 0;
+    }
+
+    .about_wrap,
+    .team,
+    .moments,
+    .contact {
+        transform: translateY(15%);
+        margin-bottom: 30px;
+    }
 }
-/* 手机设备适配 */
+
+/* 超小屏幕设备适配 (小手机) */
+@media (max-width: 480px) {
+    .container {
+        padding: 0 15px;
+    }
+
+    .name {
+        font-size: 3vh;
+    }
+
+    h3 {
+        font-size: 3vh;
+    }
+
+    h4 {
+        font-size: 1.8vh;
+    }
+
+    .title {
+        font-size: 14px;
+        padding-left: 15px;
+    }
+
+    .avatar img,
+    .Logo img {
+        height: 20vh;
+    }
+
+    .menu a {
+        font-size: 1vh;
+        padding: 0.2vh 0.8vh;
+    }
+
+    .team_list,
+    .moments_list,
+    .comtact_inner {
+        padding-top: 30px;
+    }
+
+        .team_list li,
+        .moments_list li,
+        .comtact_inner li {
+            margin-bottom: 10px;
+        }
+}
+
+/* 横屏手机适配 */
+@media (max-height: 500px) and (orientation: landscape) {
+    .hero_texts {
+        transform: translateY(15%);
+        padding: 20px;
+    }
+
+    .avatar img,
+    .Logo img {
+        height: 40vh;
+    }
+
+    .name {
+        font-size: 4vh;
+    }
+
+    .section {
+        min-height: 120vh;
+    }
+}
+
+/* 高分辨率屏幕适配 */
+@media (min-resolution: 192dpi) {
+    .menu a {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+}
+
+/* 深色模式适配 */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-color-first: rgba(0, 0, 0, 1);
+        --bg-color-mid: rgba(15, 15, 30, 1);
+        --text-color: rgba(240, 240, 240, 1);
+    }
+}
+
+/* 运动偏好适配 (减少动画) */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
 
 /* ------------------ 响应式设计 ------------------ */
