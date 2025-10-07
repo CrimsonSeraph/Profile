@@ -30,6 +30,9 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     }
 
+    window.scrollTo(0, 0); // 强制滚动到顶部
+    updateHeader();        // 同步一次状态
+
     let ticking = false;
     window.addEventListener('scroll', () => {
         if (!ticking) {
