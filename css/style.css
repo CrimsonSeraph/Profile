@@ -142,6 +142,14 @@ li {
     color: var(--special-text-color);
 }
 
+end_text {
+    background: linear-gradient(45deg, #FF9A9E 0%, #FAD0C4 50%, #A18CD1 100%); /* 创建渐变背景 */
+    background-clip: text;
+    color: transparent; /* 隐藏原始文字颜色 */
+    -webkit-text-fill-color: transparent; /* Safari兼容 */
+    display: inline-block; /* 确保渐变效果正确应用 */
+}
+
 /* ------------------ 全局重置 ------------------ */
 
 /* ------------------ 基础样式 ------------------ */
