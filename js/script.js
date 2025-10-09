@@ -47,10 +47,11 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     });
 
+    disableScroll();
     setTimeout(function () {
         document.querySelector('.loader-wrapper').classList.add('loaded');
+        document.querySelector('.loader').classList.add('loaded');
         setTimeout(function () {
-            document.querySelector('.loader-wrapper').style.display = 'none';
             enableScroll();
         }, 1500);
     }, 2000);
@@ -394,7 +395,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         // 单次平滑滚动
         function smoothSingleScroll(direction) {
-            const distance = window.innerHeight * 0.9;
+            const distance = window.innerHeight * 1;
 
             if (direction === 'down') smoothScrollTo(getScrollY() + distance, 400);
             else if (direction === 'up') smoothScrollTo(getScrollY() - distance, 400);
@@ -404,7 +405,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         // 长按持续滚动
         function startContinuousScroll(direction) {
-            const step = 5; // 每帧滚动像素，可调
+            const step = 10; // 每帧滚动像素，可调
 
             function stepScroll() {
                 if (!isKeyHeld) return; // 松开时立即停止
@@ -508,8 +509,14 @@ document.addEventListener('DOMContentLoaded', async function () {
             const key = btn.getAttribute('data-page');
             if (typeof PagePath !== 'undefined' && PagePath[key]) {
                 window.location.href = PagePath[key];
+                document.querySelector('.loader-wrapper').classList.remove('loaded');
             } else {
                 console.warn('PagePath 未定义或键不存在:', key);
+                document.querySelector('.loader-wrapper').classList.add('loaded');
+                document.querySelector('.loader').classList.add('loaded');
+                setTimeout(function () {
+                    enableScroll();
+                }, 1500);
             }
         });
     });

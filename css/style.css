@@ -181,6 +181,7 @@ body {
     height: 100%;
     z-index: 9999;
     overflow: hidden;
+    pointer-events: none
 }
 
     .loader-wrapper::before,
@@ -204,6 +205,14 @@ body {
         transform: translateY(0);
     }
 
+.loader-wrapper.loaded::before {
+    transform: translateY(-100%);
+}
+
+.loader-wrapper.loaded::after {
+    transform: translateY(100%);
+}
+
 .loader {
     position: absolute;
     top: 50%;
@@ -216,15 +225,12 @@ body {
     box-shadow: 0 0 10px var(--shadow-color);
 }
 
-.loader-wrapper.loaded::before {
-    transform: translateY(-100%);
+.loader.loaded {
+    opacity: 1;
+    transition: opacity 0.5s ease 1s;
 }
 
-.loader-wrapper.loaded::after {
-    transform: translateY(100%);
-}
-
-.loader-wrapper.loaded .loader {
+.loader-wrapper.loaded .loader.loader {
     opacity: 0;
     transition: opacity 0.5s ease;
 }
