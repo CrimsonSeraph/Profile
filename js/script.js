@@ -12,7 +12,10 @@ document.addEventListener('DOMContentLoaded', async function () {
     const showThreshold = 250;
     let isHidden = false;
 
+    let headerScrollLocked = false;
+
     function updateHeader() {
+        if (headerScrollLocked) return; // 弹窗期间不更新
         const scrollY = window.scrollY;
         if (!isHidden && scrollY > hideThreshold) {
             hero_texts.classList.add('hero-texts-hidden');
@@ -22,6 +25,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             isHidden = false;
         }
     }
+
 
     window.scrollTo(0, 0);
     updateHeader();
@@ -270,15 +274,42 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
 
     // ========== 图片点击显示 ==========
-
     function initImageModal() {
         const modal = document.getElementById('imgModal');
         const modalImg = document.getElementById('modalImg');
 
+        let scrollY = 0; // 用于保存滚动位置
+
+        // 禁用滚动
+        function disableScroll() {
+            scrollY = window.scrollY;
+            document.body.style.position = 'fixed';
+            document.body.style.top = `-${scrollY}px`;
+            document.body.style.width = '100%';
+            document.addEventListener('touchmove', preventTouchMove, { passive: false });
+            headerScrollLocked = true; // 禁用 header 滑动
+        }
+
+        function enableScroll() {
+            document.body.style.position = '';
+            document.body.style.top = '';
+            document.body.style.width = '';
+            window.scrollTo(0, scrollY);
+            document.removeEventListener('touchmove', preventTouchMove);
+            headerScrollLocked = false; // 恢复 header 滑动
+            updateHeader(); // 弹窗关闭后立即刷新 header 状态
+        }
+
+        function preventTouchMove(e) {
+            e.preventDefault();
+        }
+
+        // 点击图片显示弹窗
         document.querySelectorAll('img[data-src]').forEach(img => {
             img.addEventListener('click', () => {
                 modal.style.display = 'flex';
-                modalImg.src = img.src; // 用当前显示的图片，不用再次加载
+                modalImg.src = img.src;
+                disableScroll();
             });
         });
 
@@ -286,6 +317,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         modal.addEventListener('click', () => {
             modal.style.display = 'none';
             modalImg.src = '';
+            enableScroll();
         });
     }
 
