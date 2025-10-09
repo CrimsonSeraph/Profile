@@ -269,6 +269,26 @@ document.addEventListener('DOMContentLoaded', async function () {
         }, 500);
     }
 
+    // ========== 图片点击显示 ==========
+
+    function initImageModal() {
+        const modal = document.getElementById('imgModal');
+        const modalImg = document.getElementById('modalImg');
+
+        document.querySelectorAll('img[data-src]').forEach(img => {
+            img.addEventListener('click', () => {
+                modal.style.display = 'flex';
+                modalImg.src = img.src; // 用当前显示的图片，不用再次加载
+            });
+        });
+
+        // 点击弹窗任意位置关闭
+        modal.addEventListener('click', () => {
+            modal.style.display = 'none';
+            modalImg.src = '';
+        });
+    }
+
     // ========== 平滑滚动 ==========
     function initGlobalSmoothScroll() {
         let isScrolling = false;
@@ -408,6 +428,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         initGridSystem();
         initSmoothScroll();
         initImages();
+        initImageModal();
 
         console.log('系统初始化完成');
     } catch (error) {
