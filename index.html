@@ -69,49 +69,59 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // 这里会优先使用 Worker 注入的 targetPage
-            const targetPage = window.targetPage || '/CN.html';
-            if (!targetPage) {
-                console.error('未找到 targetPage，跳转可能出错');
-                return;
-            }
-
             const progressBar = document.getElementById('progressBar');
             let progress = 0;
+            let targetPage = '/CN.html'; // 默认页面
             let iframeLoaded = false;
 
-            // 创建 iframe 预加载目标页面
-            const preloadFrame = document.createElement('iframe');
-            preloadFrame.style.display = 'none';
-            preloadFrame.src = targetPage;
-            document.body.appendChild(preloadFrame);
+            // 请求 IP 定位 API 获取国家
+            fetch('https://ipapi.co/json/')
+                .then(res => res.json())
+                .then(data => {
+                    console.log('Detected country:', data.country); // 调试
+                    if (data.country === 'CN') {
+                        targetPage = '/CN.html';
+                    }
 
-            preloadFrame.onload = function () {
-                iframeLoaded = true;
-            };
+                    // 创建 iframe 预加载目标页面
+                    const preloadFrame = document.createElement('iframe');
+                    preloadFrame.style.display = 'none';
+                    preloadFrame.src = targetPage;
+                    document.body.appendChild(preloadFrame);
 
-            preloadFrame.onerror = function () {
-                document.getElementById('loadingOverlay').style.display = 'none';
-                document.getElementById('errorMessage').style.display = 'block';
-                const errorCode = Math.floor(1000 + Math.random() * 9000);
-                document.getElementById('errorCode').textContent = `ERR_${errorCode}`;
-            };
+                    preloadFrame.onload = function () {
+                        iframeLoaded = true;
+                    };
 
-            // 模拟进度条
-            const progressInterval = setInterval(() => {
-                if (progress < 100) {
-                    progress += Math.random() * 5; // 每次随机增加
-                    if (progress > 100) progress = 100;
-                    progressBar.style.width = progress + '%';
-                }
+                    preloadFrame.onerror = function () {
+                        document.getElementById('loadingOverlay').style.display = 'none';
+                        document.getElementById('errorMessage').style.display = 'block';
+                        const errorCode = Math.floor(1000 + Math.random() * 9000);
+                        document.getElementById('errorCode').textContent = `ERR_${errorCode}`;
+                    };
 
-                // 当进度到 100% 且 iframe 已加载完成
-                if (progress >= 100 && iframeLoaded) {
-                    clearInterval(progressInterval);
-                    window.location.replace(targetPage); // 跳转
-                }
-            }, 100);
+                    // 模拟进度条
+                    const progressInterval = setInterval(() => {
+                        if (progress < 100) {
+                            progress += Math.random() * 5;
+                            if (progress > 100) progress = 100;
+                            progressBar.style.width = progress + '%';
+                        }
+
+                        if (progress >= 100 && iframeLoaded) {
+                            clearInterval(progressInterval);
+                            window.location.replace(targetPage);
+                        }
+                    }, 100);
+
+                })
+                .catch(err => {
+                    console.error(err);
+                    // IP 定位失败也用默认页面
+                    window.location.replace(targetPage);
+                });
         });
     </script>
+
 </body>
 </html>
