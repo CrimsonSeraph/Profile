@@ -81,6 +81,8 @@
                     console.log('Detected country:', data.country); // 调试
                     if (data.country === 'CN') {
                         targetPage = '/CN.html';
+                    } else {
+                        targetPage = '/Global.html';
                     }
 
                     // 创建 iframe 预加载目标页面
