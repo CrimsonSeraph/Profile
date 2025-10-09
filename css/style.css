@@ -33,6 +33,13 @@
     --hero-bg-filter: rgba(2, 3, 18, 0.3); /* 首页背景滤镜 */
     /* 页脚样式配置 */
     --footer-color: rgba(0, 0, 30, 0.9); /* 页脚背景色 */
+    /* 渐变样式配置 */
+    --gradient-first: rgba(255, 154, 158);
+    --gradient-mid: rgba(250, 208, 196);
+    --gradient-end: rgba(161, 140, 209);
+    --button-first: rgba(255, 192, 203);
+    --button-mid: rgba(250, 250, 250);
+    --button-end: rgba(135, 206, 235);
 }
 /* 根元素自定义属性定义 */
 
@@ -77,6 +84,7 @@ h4 {
 }
 
 p {
+    font-size: 1.5vw;
 }
 
 canvas {
@@ -98,6 +106,7 @@ img.progressive {
 
     img.progressive.loaded {
         filter: blur(0);
+        opacity: 1;
     }
 
 .title {
@@ -121,7 +130,6 @@ img.progressive {
 }
 
 .text {
-    width: 100%;
     height: auto;
     float: left;
     margin-bottom: clamp(0.5rem, 1.5vh, 1.5rem);
@@ -136,6 +144,29 @@ li {
     margin: 0px;
     float: left;
     white-space: nowrap;
+    width:100%;
+}
+
+a {
+    text-decoration:none;
+}
+
+button {
+    font-size:1.5vw;
+    cursor: pointer;
+    background: linear-gradient(45deg, var(--button-first) 0%, var(--button-mid) 50%, var(--button-end) 100%);
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+}
+
+.like_button {
+    font-size: 1.5vw;
+    cursor: pointer;
+    background: linear-gradient(45deg, var(--button-first) 0%, var(--button-mid) 50%, var(--button-end) 100%);
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
 }
 
 .special-text {
@@ -143,10 +174,14 @@ li {
 }
 
 .gradient_text {
-    background: linear-gradient(45deg, #FF9A9E 0%, #FAD0C4 50%, #A18CD1 100%); /* 创建渐变背景 */
+    background: linear-gradient(45deg, var(--gradient-first) 0%, var(--gradient-mid) 50%, var(--gradient-end) 100%); /* 创建渐变背景 */
     background-clip: text;
     color: transparent; /* 隐藏原始文字颜色 */
     -webkit-text-fill-color: transparent; /* Safari兼容 */
+}
+
+.small_text {
+    font-size: clamp(10px, 1vw, 12px);
 }
 
 /* ------------------ 全局重置 ------------------ */

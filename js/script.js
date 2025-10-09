@@ -385,7 +385,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             isKeyHeld = false;
             cancelAnimationFrame(scrollAnimationId);
 
-            // 只有在“不是长按”的情况下才执行一次滚动
+            // 非长按执行
             if (!wasLongPress && holdDirection) {
                 smoothSingleScroll(holdDirection);
             }
@@ -405,7 +405,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         // 长按持续滚动
         function startContinuousScroll(direction) {
-            const step = 10; // 每帧滚动像素，可调
+            const step = 10; // 每帧滚动像素
 
             function stepScroll() {
                 if (!isKeyHeld) return; // 松开时立即停止
@@ -508,15 +508,17 @@ document.addEventListener('DOMContentLoaded', async function () {
         btn.addEventListener('click', () => {
             const key = btn.getAttribute('data-page');
             if (typeof PagePath !== 'undefined' && PagePath[key]) {
-                window.location.href = PagePath[key];
                 document.querySelector('.loader-wrapper').classList.remove('loaded');
+                setTimeout(function () {
+                    window.location.href = PagePath[key];
+                }, 1500);
             } else {
                 console.warn('PagePath 未定义或键不存在:', key);
                 document.querySelector('.loader-wrapper').classList.add('loaded');
                 document.querySelector('.loader').classList.add('loaded');
                 setTimeout(function () {
                     enableScroll();
-                }, 1500);
+                }, 2000);
             }
         });
     });
@@ -537,7 +539,8 @@ document.addEventListener('DOMContentLoaded', async function () {
 
 //使用格式< button data-page="page_name" > text</button >
 const PagePath = {
-    //home: 'index.html',
-    //about: 'about.html',
-    //contact: 'contact.html'
+    DeltaForce: '../html/DeltaForce.html',
+    ACLOS: '../html/ACLOS.html',
+    BlueArchive: '../html/BlueArchive.html',
+    group: '../html/group.html',
 };
