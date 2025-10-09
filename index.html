@@ -71,7 +71,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             const progressBar = document.getElementById('progressBar');
             let progress = 0;
-            let targetPage = '/CN.html'; // 默认页面
+            let targetPage = '/html/CN.html'; // 默认页面
             let iframeLoaded = false;
 
             // 请求 IP 定位 API 获取国家
@@ -80,9 +80,9 @@
                 .then(data => {
                     console.log('Detected country:', data.country); // 调试
                     if (data.country === 'CN') {
-                        targetPage = '/CN.html';
+                        targetPage = '/html/CN.html';
                     } else {
-                        targetPage = '/Global.html';
+                        targetPage = '/html/Global.html';
                     }
 
                     // 创建 iframe 预加载目标页面

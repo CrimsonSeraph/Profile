@@ -414,3 +414,10 @@ document.addEventListener('DOMContentLoaded', async function () {
         console.error('初始化出错:', error);
     }
 });
+
+//使用格式< button data-page="page_name" > text</button >
+const PagePath = {
+    //home: 'index.html',
+    //about: 'about.html',
+    //contact: 'contact.html'
+};
