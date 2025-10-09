@@ -13,6 +13,8 @@ async function handleRequest(request) {
     const targetPage = countryPageMap[country] || 'Global.html';
     const baseURL = 'https://profile-9or.pages.dev/';
 
+    console.log("Detected country:", country);
+
     try {
         const pageResponse = await fetch(baseURL + targetPage);
         const html = await pageResponse.text();
