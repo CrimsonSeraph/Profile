@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', async function () {
-    // ------------------ 基础设置 ------------------
+    //设置 --real-vh 变量，解决移动端 vh 单位问题
     function setRealVh() {
         const vh = window.innerHeight * 0.01;
         document.documentElement.style.setProperty('--real-vh', `${vh}px`);
@@ -14,9 +14,13 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     let headerScrollLocked = false;
 
+    function getScrollY() {
+        return window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    }
+
     function updateHeader() {
         if (headerScrollLocked) return; // 弹窗期间不更新
-        const scrollY = window.scrollY;
+        const scrollY = getScrollY();
         if (!isHidden && scrollY > hideThreshold) {
             hero_texts.classList.add('hero-texts-hidden');
             isHidden = true;
@@ -26,8 +30,10 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     }
 
+    window.addEventListener('beforeunload', () => {
+        window.scrollTo(0, 0);
+    });
 
-    window.scrollTo(0, 0);
     updateHeader();
 
     let ticking = false;
@@ -45,9 +51,11 @@ document.addEventListener('DOMContentLoaded', async function () {
         document.querySelector('.loader-wrapper').classList.add('loaded');
         setTimeout(function () {
             document.querySelector('.loader-wrapper').style.display = 'none';
+            enableScroll();
         }, 1500);
     }, 2000);
 
+    // ------------------ 网格绘制 ------------------
     function resizeCanvas(canvas) {
         if (!canvas) return;
         const dpr = window.devicePixelRatio || 1;
@@ -83,7 +91,6 @@ document.addEventListener('DOMContentLoaded', async function () {
         return grad;
     }
 
-    // ------------------ 网格绘制 ------------------
     function drawSkewGrid(canvas) {
         const ctx = canvas.getContext('2d');
         const gridSize = parseInt(getCssVar('--grid-size')) || 200;
@@ -273,36 +280,36 @@ document.addEventListener('DOMContentLoaded', async function () {
         }, 500);
     }
 
+    // ========== 禁用滚动 ==========
+    function preventTouchMove(e) {
+        e.preventDefault();
+    }
+
+    function disableScroll() {
+        scrollY = getScrollY();
+        document.body.style.position = 'fixed';
+        document.body.style.top = `-${scrollY}px`;
+        document.body.style.width = '100%';
+        document.addEventListener('touchmove', preventTouchMove, { passive: false });
+        headerScrollLocked = true; // 禁用 header 滑动
+    }
+
+    function enableScroll() {
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.width = '';
+        window.scrollTo(0, scrollY);
+        document.removeEventListener('touchmove', preventTouchMove);
+        headerScrollLocked = false; // 恢复 header 滑动
+        updateHeader(); // 弹窗关闭后立即刷新 header 状态
+    }
+
     // ========== 图片点击显示 ==========
     function initImageModal() {
         const modal = document.getElementById('imgModal');
         const modalImg = document.getElementById('modalImg');
 
         let scrollY = 0; // 用于保存滚动位置
-
-        // 禁用滚动
-        function disableScroll() {
-            scrollY = window.scrollY;
-            document.body.style.position = 'fixed';
-            document.body.style.top = `-${scrollY}px`;
-            document.body.style.width = '100%';
-            document.addEventListener('touchmove', preventTouchMove, { passive: false });
-            headerScrollLocked = true; // 禁用 header 滑动
-        }
-
-        function enableScroll() {
-            document.body.style.position = '';
-            document.body.style.top = '';
-            document.body.style.width = '';
-            window.scrollTo(0, scrollY);
-            document.removeEventListener('touchmove', preventTouchMove);
-            headerScrollLocked = false; // 恢复 header 滑动
-            updateHeader(); // 弹窗关闭后立即刷新 header 状态
-        }
-
-        function preventTouchMove(e) {
-            e.preventDefault();
-        }
 
         // 点击图片显示弹窗
         document.querySelectorAll('img[data-src]').forEach(img => {
@@ -328,13 +335,13 @@ document.addEventListener('DOMContentLoaded', async function () {
         let scrollStart = 0;
         let scrollStartTime = 0;
 
-        // 拦截鼠标滚轮事件
+        // 鼠标滚轮平滑滚动
         window.addEventListener('wheel', function (e) {
             e.preventDefault();
 
             const delta = e.deltaY;
-            scrollStart = window.scrollY;
-            scrollTarget = scrollStart + delta * 2; // 调整滚动速度
+            scrollStart = getScrollY();
+            scrollTarget = scrollStart + delta * 6; // 调整滚动速度
             scrollStartTime = performance.now();
 
             if (!isScrolling) {
@@ -342,25 +349,77 @@ document.addEventListener('DOMContentLoaded', async function () {
             }
         }, { passive: false });
 
-        // 拦截键盘滚动事件
-        window.addEventListener('keydown', function (e) {
-            const scrollAmount = 100; // 每次按键滚动距离
+        // 键盘平滑滚动
+        let isKeyHeld = false;
+        let wasLongPress = false;
+        let keyHoldTimer = null;
+        let scrollAnimationId = null;
+        let holdDirection = null;
 
-            if (e.key === 'PageDown' || e.key === ' ' || e.key === 'ArrowDown') {
-                e.preventDefault();
-                smoothScrollTo(window.scrollY + window.innerHeight * 0.9, 500);
-            } else if (e.key === 'PageUp' || e.key === 'ArrowUp') {
-                e.preventDefault();
-                smoothScrollTo(window.scrollY - window.innerHeight * 0.9, 500);
-            } else if (e.key === 'Home') {
-                e.preventDefault();
-                smoothScrollTo(0, 800);
-            } else if (e.key === 'End') {
-                e.preventDefault();
-                smoothScrollTo(document.body.scrollHeight, 800);
-            }
+        window.addEventListener('keydown', (e) => {
+            // 如果键已经按住，直接返回
+            if (isKeyHeld) return;
+            isKeyHeld = true;
+            wasLongPress = false;
+
+            // 判断方向
+            if (['ArrowDown', 'PageDown', ' '].includes(e.key)) holdDirection = 'down';
+            else if (['ArrowUp', 'PageUp'].includes(e.key)) holdDirection = 'up';
+            else if (e.key === 'Home') holdDirection = 'home';
+            else if (e.key === 'End') holdDirection = 'end';
+            else return;
+
+            e.preventDefault();
+
+            // 200ms 内判断是否长按
+            keyHoldTimer = setTimeout(() => {
+                if (!isKeyHeld) return;
+                wasLongPress = true; // 标记为长按
+                startContinuousScroll(holdDirection);
+            }, 200);
         });
 
+        window.addEventListener('keyup', (e) => {
+            clearTimeout(keyHoldTimer);
+            isKeyHeld = false;
+            cancelAnimationFrame(scrollAnimationId);
+
+            // 只有在“不是长按”的情况下才执行一次滚动
+            if (!wasLongPress && holdDirection) {
+                smoothSingleScroll(holdDirection);
+            }
+
+            holdDirection = null;
+        });
+
+        // 单次平滑滚动
+        function smoothSingleScroll(direction) {
+            const distance = window.innerHeight * 0.9;
+
+            if (direction === 'down') smoothScrollTo(getScrollY() + distance, 400);
+            else if (direction === 'up') smoothScrollTo(getScrollY() - distance, 400);
+            else if (direction === 'home') smoothScrollTo(0, 600);
+            else if (direction === 'end') smoothScrollTo(document.body.scrollHeight, 600);
+        }
+
+        // 长按持续滚动
+        function startContinuousScroll(direction) {
+            const step = 5; // 每帧滚动像素，可调
+
+            function stepScroll() {
+                if (!isKeyHeld) return; // 松开时立即停止
+                const currentY = getScrollY();
+
+                if (direction === 'down')
+                    window.scrollTo(0, currentY + step);
+                else if (direction === 'up')
+                    window.scrollTo(0, currentY - step);
+
+                scrollAnimationId = requestAnimationFrame(stepScroll);
+            }
+
+            scrollAnimationId = requestAnimationFrame(stepScroll);
+        }
         function smoothScrollToPosition() {
             if (isScrolling) return;
 
@@ -373,7 +432,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 const progress = Math.min(elapsed / duration, 1);
 
                 // 缓动函数
-                const easeOutQuart = t => 1 - Math.pow(1 - t, 4);
+                const easeOutQuart = t => 1 - Math.pow(1 - t, 3);
                 const currentY = scrollStart + (scrollTarget - scrollStart) * easeOutQuart(progress);
 
                 window.scrollTo(0, currentY);
@@ -393,7 +452,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
 
     function smoothScrollTo(targetPosition, duration = 1000) {
-        const startPosition = window.scrollY;
+        const startPosition = getScrollY();
         const distance = targetPosition - startPosition;
 
         // 如果距离很小，直接滚动，不需要动画
@@ -435,7 +494,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
                 if (target) {
                     const topbarHeight = document.querySelector('.topbar').offsetHeight;
-                    const targetPosition = target.getBoundingClientRect().top + window.scrollY - topbarHeight;
+                    const targetPosition = target.getBoundingClientRect().top + getScrollY() - topbarHeight;
 
                     smoothScrollTo(targetPosition, 800); // 800ms 持续时间
                 }
@@ -457,8 +516,9 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     // ========== 主初始化流程 ==========
     try {
+        disableScroll();
         initGridSystem();
-        initSmoothScroll();
+        initGlobalSmoothScroll();
         initImages();
         initImageModal();
 
