@@ -539,8 +539,8 @@ document.addEventListener('DOMContentLoaded', async function () {
 
 //使用格式< button data-page="page_name" > text</button >
 const PagePath = {
-    DeltaForce: '../html/DeltaForce.html',
-    ACLOS: '../html/ACLOS.html',
-    BlueArchive: '../html/BlueArchive.html',
-    group: '../html/group.html',
+    group: '../html/others/group.html',
+    DeltaForce: '../html/others/DeltaForce.html',
+    ACLOS: '../html/others/ACLOS.html',
+    BlueArchive: '../html/others/BlueArchive.html',
 };
