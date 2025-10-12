@@ -85,7 +85,8 @@ h4 {
 }
 
 .a,
-p {
+p,
+button{
     font-size: clamp(1vh, 1.5vw, 1.5vh);
 }
 
@@ -146,15 +147,14 @@ li {
     margin: 0px;
     float: left;
     white-space: nowrap;
-    width:100%;
+    width: 100%;
 }
 
 a {
-    text-decoration:none;
+    text-decoration: none;
 }
 
 button {
-    font-size:1.5vw;
     cursor: pointer;
     background: linear-gradient(45deg, var(--button-first) 0%, var(--button-mid) 50%, var(--button-end) 100%);
     background-clip: text;
@@ -163,7 +163,6 @@ button {
 }
 
 .like_button {
-    font-size: 1.5vw;
     cursor: pointer;
     background: linear-gradient(45deg, var(--button-first) 0%, var(--button-mid) 50%, var(--button-end) 100%);
     background-clip: text;
@@ -262,13 +261,13 @@ body {
         transform: translateY(0);
     }
 
-.loader-wrapper.loaded::before {
-    transform: translateY(-100%);
-}
+    .loader-wrapper.loaded::before {
+        transform: translateY(-100%);
+    }
 
-.loader-wrapper.loaded::after {
-    transform: translateY(100%);
-}
+    .loader-wrapper.loaded::after {
+        transform: translateY(100%);
+    }
 
 .loader {
     position: absolute;
@@ -282,10 +281,10 @@ body {
     box-shadow: 0 0 10px var(--shadow-color);
 }
 
-.loader.loaded {
-    opacity: 1;
-    transition: opacity 0.5s ease 1s;
-}
+    .loader.loaded {
+        opacity: 1;
+        transition: opacity 0.5s ease 1s;
+    }
 
 .loader-wrapper.loaded .loader.loader {
     opacity: 0;
@@ -357,7 +356,7 @@ body {
     .menu ul {
         display: flex;
         list-style: none;
-        gap: clamp(0.5vh, 1vh, 1.5vh);
+        gap: 1vh;
         flex-wrap: nowrap;
     }
 
@@ -373,7 +372,7 @@ body {
         font-family: 'Nunito', sans-serif;
         font-weight: 600;
         font-size: clamp(12px, 1.5vw, 1.5vh);
-        padding: clamp(0.3vh, 0.5vh, 0.8vh) clamp(1vh, 1.5vh, 2vh);
+        padding: 0.5vh 1.5vh;
         border-radius: 4px;
         transition: all 0.3s ease;
         display: block;
@@ -407,7 +406,7 @@ body {
 .Logo {
     position: absolute;
     top: 50%;
-    transform: translateY(clamp(15%, 20%, 25%));
+    transform: translateY(20%);
     z-index: 0;
     flex-shrink: 0;
     align-items: center;
@@ -452,7 +451,7 @@ body {
     top: 50%;
     left: 0;
     right: 0;
-    transform: translateY(clamp(5vh, 10vh, 15vh));
+    transform: translateY(10vh);
     padding: clamp(20px, 4vh, 40px) clamp(10px, 2vw, 20px);
     display: flex;
     align-items: center;
@@ -514,7 +513,7 @@ body {
 }
 
     .avatar img {
-        height: clamp(200px, 40vw, 500px);
+        height: clamp(200px, 40vw, 400px);
         width: auto;
         max-height: 1000px;
         transition: transform 0.3s ease;
@@ -528,11 +527,11 @@ body {
     }
 
 .about_wrap {
-    width: 90%;
+    width: 90vw;
     height: auto;
     clear: both;
     float: left;
-    transform: translateY(clamp(5vh, 10vh, 15vh)) translateX(clamp(1%, 5%, 10%));
+    transform: translateY(10vh) translateX(5vw);
     margin-bottom: clamp(60px, 8vh, 92px);
 }
 
@@ -568,7 +567,7 @@ body {
     clear: both;
     float: left;
     margin-bottom: clamp(30px, 4vh, 42px);
-    transform: translateY(clamp(5vh, 10vh, 15vh)) translateX(10vw);
+    transform: translateY(10vh) translateX(10vw);
 }
 
 .team_list {
@@ -623,12 +622,12 @@ body {
 
 /* ---- 五:社交 ---- */
 .contact {
-    width: 80vw;
+    width: 90vw;
     height: auto;
     clear: both;
     float: left;
     margin-bottom: clamp(30px, 4vh, 42px);
-    transform: translateY(clamp(5vh, 10vh, 15vh)) translateX(10vw);
+    transform: translateY(10vh) translateX(5vw);
 }
 
 .contact_inner {
@@ -636,7 +635,7 @@ body {
     height: auto;
     clear: both;
     float: left;
-    padding-top: clamp(50px, 8vh, 83px);
+    padding-top: clamp(20px, 5vh, 50px);
     position: relative;
 }
 
@@ -657,12 +656,12 @@ body {
 .footer {
     box-shadow: inset 0 2px 0 var(--shadow-color);
     width: 100%;
-    height: 15vh;
     clear: both;
     float: left;
     background-color: var(--footer-color);
     padding: clamp(30px, 5vh, 50px) 0px;
     justify-content: flex-start;
+    transform: translateY(-5vh);
 }
 
 .footer_inner {
@@ -672,7 +671,7 @@ body {
 }
 
     .footer_inner p {
-        font-size: clamp(1vh, 1vw, 1.5vh);
+        font-size: clamp(1vh, 3vw, 3vh);
     }
 /* ---- 六:页脚 ---- */
 /* 内容区域样式 */
@@ -704,11 +703,12 @@ body {
     }
 
     .hero_texts {
-        transform: translateY(clamp(8vh, 12vh, 18vh));
+        transform: translateY(12vh);
     }
 
     .a,
-    p {
+    p,
+    button{
         font-size: clamp(1vh, 1.5vw, 1.5vh);
     }
 }
@@ -721,7 +721,7 @@ body {
     }
 
     .hero_texts {
-        transform: translateY(clamp(6vh, 9vh, 12vh));
+        transform: translateY(9vh);
         padding: clamp(15px, 3vh, 30px) clamp(8px, 1.5vw, 15px);
     }
 
@@ -734,14 +734,20 @@ body {
     }
 
     .about_inner {
-        transform: translateX(clamp(3vh, 6vh, 9vh));
+        transform: translateX(6vh);
     }
 
-    .about_wrap,
+    .about_wrap {
+        transform: translateY(9vh) translateX(5vw);
+    }
+
     .team,
-    .moments,
+    .moments {
+        transform: translateY(9vh) translateX(10vw);
+    }
+
     .contact {
-        transform: translateY(clamp(6vh, 9vh, 12vh)) translateX(clamp(3vh, 6vh, 9vh));
+        transform: translateY(9vh) translateX(5vw);
     }
 
     h3 {
@@ -761,7 +767,7 @@ body {
     }
 
     .hero_texts {
-        transform: translateY(clamp(4vh, 6vh, 8vh));
+        transform: translateY(6vh);
         padding: clamp(12px, 2.5vh, 25px) clamp(6px, 1vw, 12px);
         flex-direction: column;
         text-align: center;
@@ -778,9 +784,11 @@ body {
         }
 
     .a,
-    p {
+    p,
+    button{
         font-size: clamp(20px, 3vw, 24px);
     }
+
     .about_inner {
         flex-direction: column;
     }
@@ -800,21 +808,30 @@ body {
         height: clamp(150px, 30vw, 300px);
     }
 
-    .about_wrap,
+    .about_wrap {
+        transform: translateY(6vh) translateX(5vw);
+        margin-bottom: clamp(20px, 3vh, 25px);
+    }
+
     .team,
-    .moments,
+    .moments {
+        transform: translateY(6vh) translateX(10vw);
+        margin-bottom: clamp(20px, 3vh, 25px);
+    }
+
     .contact {
-        transform: translateY(clamp(4vh, 6vh, 8vh)) translateX(clamp(1vh, 5vh, 10vh));
+        width:90vw;
+        transform: translateY(6vh) translateX(5vw);
         margin-bottom: clamp(20px, 3vh, 25px);
     }
 
     .menu ul {
-        gap: clamp(0.3vh, 0.8vh, 1vh);
+        gap: 0.8vh;
     }
 
     .menu a {
         font-size: clamp(11px, 1.3vw, 1.3vh);
-        padding: clamp(0.2vh, 0.4vh, 0.6vh) clamp(0.8vh, 1.2vh, 1.5vh);
+        padding: 0.4vh 1.2vh;
     }
 
     h3 {
@@ -823,12 +840,12 @@ body {
     }
 
     h4 {
-        font-size: clamp(0.8rem, 2vw, 2vh);
+        font-size: clamp(20px, 3vw, 30px);
         margin-bottom: clamp(0.4rem, 0.8vh, 1.5rem);
     }
 
     .title {
-        font-size: clamp(11px, 1.1vw, 15px);
+        font-size: clamp(25px, 3vw, 30px);
         padding-left: clamp(12px, 1.2vw, 20px);
     }
 }
@@ -846,7 +863,7 @@ body {
     }
 
     .hero_texts {
-        transform: translateY(clamp(3vh, 4vh, 5vh));
+        transform: translateY(4vh);
         padding: clamp(10px, 2vh, 20px) clamp(5px, 0.8vw, 10px);
         flex-direction: column;
         text-align: center;
@@ -894,22 +911,31 @@ body {
         height: clamp(120px, 25vw, 250px);
     }
 
-    .about_wrap,
-    .team,
-    .moments,
-    .contact {
-        transform: translateY(clamp(3vh, 4vh, 5vh)) translateX(4vw);
+    .about_wrap {
+        transform: translateY(4vh) translateX(5vw);
         margin-bottom: clamp(15px, 2.5vh, 20px);
     }
 
-        .menu ul {
-            gap: clamp(0.2vh, 0.5vh, 0.8vh);
-        }
+    .team,
+    .moments {
+        transform: translateY(4vh) translateX(10vw);
+        margin-bottom: clamp(15px, 2.5vh, 20px);
+    }
 
-        .menu a {
-            font-size: clamp(10px, 1.1vw, 1.1vh);
-            padding: clamp(0.15vh, 0.3vh, 0.5vh) clamp(0.6vh, 0.9vh, 1.2vh);
-        }
+    .contact {
+        width:90vw;
+        transform: translateY(4vh) translateX(5vw);
+        margin-bottom: clamp(15px, 2.5vh, 20px);
+    }
+
+    .menu ul {
+        gap: 0.5vh;
+    }
+
+    .menu a {
+        font-size: clamp(10px, 1.1vw, 1.1vh);
+        padding: 0.3vh 0.9vh;
+    }
 
     h3 {
         font-size: clamp(1.4rem, 4vw, 4vh);
@@ -922,7 +948,8 @@ body {
     }
 
     .a,
-    p {
+    p,
+    button{
         font-size: clamp(12px, 5vw, 14px);
     }
 
@@ -955,7 +982,7 @@ body {
     }
 
     .hero_texts {
-        transform: translateY(clamp(2vh, 3vh, 4vh));
+        transform: translateY(20vh);
         padding: clamp(8px, 1.5vh, 15px) clamp(4px, 0.6vw, 8px);
         flex-direction: column;
         text-align: center;
@@ -976,12 +1003,12 @@ body {
         }
 
     .name {
-        font-size: clamp(1.2rem, 3.5vw, 3.5vh);
+        font-size: clamp(3vh, 8vw, 4vh);
         margin-bottom: clamp(3px, 0.5vh, 6px);
     }
 
     .subtitle {
-        font-size: clamp(8px, 0.9vw, 1vh);
+        font-size: clamp(1vh, 5vw, 2vh);
     }
 
     .about_inner {
@@ -1004,11 +1031,19 @@ body {
         height: clamp(100px, 20vw, 200px);
     }
 
-    .about_wrap,
+    .about_wrap {
+        transform: translateY(20vh) translateX(5vw);
+        margin-bottom: clamp(12px, 2vh, 18px);
+    }
+
     .team,
-    .moments,
+    .moments {
+        transform: translateY(20vh) translateX(10vw);
+        margin-bottom: clamp(12px, 2vh, 18px);
+    }
+
     .contact {
-        transform: translateY(clamp(2vh, 3vh, 4vh)) translateX(5vw);
+        transform: translateY(20vh) translateX(5vw);
         margin-bottom: clamp(12px, 2vh, 18px);
     }
 
@@ -1017,32 +1052,42 @@ body {
         align-items: flex-start;
     }
 
+    .contact {
+        width: 90vw;
+    }
+
     .menu {
         margin: clamp(5px, 1vh, 8px) 0 0 0;
         width: 100%;
     }
 
         .menu ul {
-            gap: clamp(0.1vh, 0.3vh, 0.5vh);
+            gap: 0.3vh;
         }
 
         .menu a {
             font-size: clamp(9px, 1vw, 1vh);
-            padding: clamp(0.1vh, 0.2vh, 0.3vh) clamp(0.4vh, 0.6vh, 0.8vh);
+            padding: 0.2vh 0.6vh;
         }
 
     h3 {
-        font-size: clamp(1.2rem, 3.5vw, 3.5vh);
+        font-size: clamp(3vh, 8vw, 4vh);
         margin-bottom: clamp(0.2rem, 0.4vh, 0.8rem);
     }
 
     h4 {
-        font-size: clamp(0.6rem, 1.6vw, 1.6vh);
+        font-size: clamp(15px, 2.5vw, 25vh);
         margin-bottom: clamp(0.2rem, 0.4vh, 0.8rem);
     }
 
+    .a,
+    p,
+    button{
+        font-size: clamp(1.5vh, 3vw, 2vh);
+    }
+
     .title {
-        font-size: clamp(9px, 0.9vw, 12px);
+        font-size: clamp(20px, 3vw, 30px);
         padding-left: clamp(8px, 0.8vw, 15px);
         margin-bottom: clamp(0.2rem, 0.4vh, 0.8rem);
     }
@@ -1074,35 +1119,47 @@ body {
     }
 
     .hero_texts {
-        transform: translateY(clamp(1vh, 2vh, 3vh));
+        transform: translateY(2vh);
         padding: clamp(5px, 1vh, 10px) clamp(3px, 0.5vw, 6px);
     }
 
     .Logo img {
-        height: clamp(80px, 15vh, 150px);
+        height: clamp(100px, 50vh, 200px);
     }
 
     .name {
-        font-size: clamp(1rem, 3vw, 3vh);
+        font-size: clamp(30px, 5vw, 50px);
     }
 
     .subtitle {
-        font-size: clamp(7px, 0.8vw, 0.9vh);
+        font-size: clamp(15, 2.5vw, 25vh);
     }
 
-    .about_wrap,
+    .about_wrap {
+        transform: translateY(10vh) translateX(5vw);
+    }
+
     .team,
-    .moments,
+    .moments {
+        transform: translateY(10vh) translateX(10vw);
+    }
+
     .contact {
-        transform: translateY(clamp(1vh, 2vh, 3vh)) translateX(0);
+        transform: translateY(10vh) translateX(5vw);
     }
 
     .avatar img {
         height: clamp(80px, 15vw, 150px);
     }
 
-    .section {
-        min-height: 80vh;
+    .a,
+    p,
+    button{
+        font-size: clamp(5px, 2vw, 12px);
+    }
+
+    .footer {
+        transform: translateY(7vh);
     }
 }
 
