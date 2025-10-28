@@ -7,7 +7,7 @@ This is a personal website with multiple pages.
 
 ### 首要页面 / Main Landing Page
 
-- 页面中包含一张图片  
+- 页面如图所示  
   ![图片](/ShowImage.png)
 
 - 根据 IP 自动重定向到指定页面：  
