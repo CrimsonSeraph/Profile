@@ -661,7 +661,6 @@ body {
     background-color: var(--footer-color);
     padding: clamp(30px, 5vh, 50px) 0px;
     justify-content: flex-start;
-    transform: translateY(-5vh);
 }
 
 .footer_inner {

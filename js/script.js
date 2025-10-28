@@ -1,43 +1,104 @@
-document.addEventListener('DOMContentLoaded', async function () {
-    //设置 --real-vh 变量，解决移动端 vh 单位问题
-    function setRealVh() {
-        const vh = window.innerHeight * 0.01;
-        document.documentElement.style.setProperty('--real-vh', `${vh}px`);
+// =============================
+// 全局初始化入口
+// =============================
+document.addEventListener("DOMContentLoaded", () => {
+    console.log("DOM 加载完成，开始初始化");
+    initializeApp();
+});
+
+// =============================
+// 主入口函数
+// =============================
+function initializeApp() {
+    try {
+        console.log("[App] 初始化开始");
+
+        // 设置视口
+        setRealVh();
+        window.addEventListener("resize", setRealVh);
+
+        // 初始化加载动画
+        initLoader();
+
+        // 初始化网格背景系统
+        initGridSystem();
+
+        // 初始化图片系统
+        initImages();
+        initImageModal();
+
+        // 初始化滚动系统
+        initGlobalSmoothScroll();
+
+        // 初始化页面交互逻辑
+        initHeaderScroll();
+        initPageNavigation();
+
+        console.log("初始化完成");
+    } catch (e) {
+        console.error("初始化出错:", e);
     }
-    setRealVh();
-    window.addEventListener('resize', setRealVh);
+}
 
-    const hero_texts = document.querySelector('.hero_texts');
-    const hideThreshold = 250;
-    const showThreshold = 250;
-    let isHidden = false;
+// =============================
+// 视口修正
+// =============================
+function setRealVh() {
+    const vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty("--real-vh", `${vh}px`);
+}
 
-    let headerScrollLocked = false;
+// =============================
+// 页面加载动画
+// =============================
+function initLoader() {
+    disableScroll();
 
-    function getScrollY() {
-        return window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
-    }
+    setTimeout(() => {
+        const wrapper = document.querySelector(".loader-wrapper");
+        const loader = document.querySelector(".loader");
+        wrapper?.classList.add("loaded");
+        loader?.classList.add("loaded");
 
-    function updateHeader() {
-        if (headerScrollLocked) return; // 弹窗期间不更新
-        const scrollY = getScrollY();
-        if (!isHidden && scrollY > hideThreshold) {
-            hero_texts.classList.add('hero-texts-hidden');
-            isHidden = true;
-        } else if (isHidden && scrollY <= showThreshold) {
-            hero_texts.classList.remove('hero-texts-hidden');
-            isHidden = false;
-        }
-    }
+        setTimeout(enableScroll, 1500);
+    }, 2000);
 
-    window.addEventListener('beforeunload', () => {
+    window.addEventListener("beforeunload", () => {
         window.scrollTo(0, 0);
     });
+}
 
+// =============================
+// Header 滚动控制
+// =============================
+let isHidden = false;
+let headerScrollLocked = false;
+const hideThreshold = 250;
+const showThreshold = 250;
+
+function getScrollY() {
+    return window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+}
+
+function updateHeader() {
+    if (headerScrollLocked) return;
+    const heroTexts = document.querySelector(".hero_texts");
+    const scrollY = getScrollY();
+
+    if (!isHidden && scrollY > hideThreshold) {
+        heroTexts?.classList.add("hero-texts-hidden");
+        isHidden = true;
+    } else if (isHidden && scrollY <= showThreshold) {
+        heroTexts?.classList.remove("hero-texts-hidden");
+        isHidden = false;
+    }
+}
+
+function initHeaderScroll() {
+    let ticking = false;
     updateHeader();
 
-    let ticking = false;
-    window.addEventListener('scroll', () => {
+    window.addEventListener("scroll", () => {
         if (!ticking) {
             requestAnimationFrame(() => {
                 updateHeader();
@@ -46,115 +107,136 @@ document.addEventListener('DOMContentLoaded', async function () {
             ticking = true;
         }
     });
+}
 
-    disableScroll();
-    setTimeout(function () {
-        document.querySelector('.loader-wrapper').classList.add('loaded');
-        document.querySelector('.loader').classList.add('loaded');
-        setTimeout(function () {
-            enableScroll();
-        }, 1500);
-    }, 2000);
+// =============================
+// 禁用/启用滚动
+// =============================
+let scrollY = 0;
 
-    // ------------------ 网格绘制 ------------------
-    function resizeCanvas(canvas) {
-        if (!canvas) return;
-        const dpr = window.devicePixelRatio || 1;
-        canvas.style.width = window.innerWidth + 'px';
-        canvas.style.height = window.innerHeight + 'px';
-        canvas.width = window.innerWidth * dpr;
-        canvas.height = window.innerHeight * dpr;
-        const ctx = canvas.getContext('2d');
-        if (ctx) ctx.scale(dpr, dpr);
-    }
+function preventTouchMove(e) {
+    e.preventDefault();
+}
 
-    function getCssVar(name) {
-        return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
-    }
+function disableScroll() {
+    scrollY = getScrollY();
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.width = "100%";
+    document.addEventListener("touchmove", preventTouchMove, { passive: false });
+    headerScrollLocked = true;
+}
 
-    function getGridAngles() {
-        const angle1 = parseFloat(getCssVar('--grid-angle1')) || 100;
-        const angle2 = parseFloat(getCssVar('--grid-angle2')) || 60;
-        return [angle1 * Math.PI / 180, angle2 * Math.PI / 180];
-    }
+function enableScroll() {
+    document.body.style.position = "";
+    document.body.style.top = "";
+    document.body.style.width = "";
+    window.scrollTo(0, scrollY);
+    document.removeEventListener("touchmove", preventTouchMove);
+    headerScrollLocked = false;
+    updateHeader();
+}
 
-    function createAngleGradient(ctx, width, height, angle, colors) {
-        const rad = (angle % 360) * Math.PI / 180;
-        const dx = Math.cos(rad);
-        const dy = Math.sin(rad);
-        const half = Math.sqrt(width * width + height * height) / 2;
-        const x0 = width / 2 - dx * half;
-        const y0 = height / 2 - dy * half;
-        const x1 = width / 2 + dx * half;
-        const y1 = height / 2 + dy * half;
-        const grad = ctx.createLinearGradient(x0, y0, x1, y1);
-        colors.forEach(c => grad.addColorStop(c.offset, c.color));
-        return grad;
-    }
+// =============================
+// 网格背景绘制与动画
+// =============================
+let offCanvas, offCtx, lastTime = performance.now(), fadeTime = 0, fading = true;
 
-    function drawSkewGrid(canvas) {
-        const ctx = canvas.getContext('2d');
-        const gridSize = parseInt(getCssVar('--grid-size')) || 200;
-        const lineWidth = parseInt(getCssVar('--grid-line-width')) || 2;
-        const lineColor = getCssVar('--grid-line-color') || 'rgba(255, 192, 203,0.5)';
-        const highlightColor = getCssVar('--grid-highlight-color') || 'rgba(255,255,255,0.2)';
-        const shadowColor = getCssVar('--grid-shadow-color') || 'rgba(0,0,0,0.3)';
-        const isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
-        const shadowBlur = isMobile ? 0 : (parseInt(getCssVar('--grid-shadow-blur')) || 4);
-        const [angle1, angle2] = getGridAngles();
-        const dx1 = Math.cos(angle1), dy1 = Math.sin(angle1);
-        const dx2 = Math.cos(angle2), dy2 = Math.sin(angle2);
-        const diag = Math.sqrt(canvas.width * canvas.width + canvas.height * canvas.height) * 2;
-
-        [[dx1, dy1], [dx2, dy2]].forEach(([dx, dy]) => {
-            let startOffset = -diag;
-            for (let i = startOffset; i < diag; i += gridSize) {
-                ctx.beginPath();
-                ctx.moveTo(i * dx - dy * diag, i * dy + dx * diag);
-                ctx.lineTo(i * dx + dy * diag, i * dy - dx * diag);
-                ctx.strokeStyle = lineColor;
-                ctx.lineWidth = lineWidth;
-                ctx.shadowColor = shadowColor;
-                ctx.shadowBlur = shadowBlur;
-                ctx.stroke();
-
-                ctx.beginPath();
-                ctx.moveTo(i * dx - dy * diag + 1, i * dy + dx * diag + 1);
-                ctx.lineTo(i * dx + dy * diag + 1, i * dy - dx * diag + 1);
-                ctx.strokeStyle = highlightColor;
-                ctx.lineWidth = 1;
-                ctx.shadowBlur = 0;
-                ctx.stroke();
-            }
+function initGridSystem() {
+    const mainCanvas = document.getElementById("grid-bg") || (() => {
+        const c = document.createElement("canvas");
+        c.id = "grid-bg";
+        Object.assign(c.style, {
+            position: "fixed", left: "0", top: "0", width: "100vw", height: "100vh",
+            zIndex: "-1", pointerEvents: "none"
         });
-    }
+        document.body.appendChild(c);
+        return c;
+    })();
 
-    // ------------------ 动画 ------------------
-    let offCanvas, offCtx;
-    let lastTime = performance.now();
-    let fadeTime = 0;
-    let fading = true;
+    resizeCanvas(mainCanvas);
 
-    function animateGrid(mainCanvas) {
+    offCanvas = document.createElement("canvas");
+    offCanvas.width = mainCanvas.width;
+    offCanvas.height = mainCanvas.height;
+    offCtx = offCanvas.getContext("2d");
+    offCtx.imageSmoothingEnabled = false;
+
+    drawSkewGrid(offCanvas);
+    animateGrid(mainCanvas);
+
+    window.addEventListener("resize", () => {
+        resizeCanvas(mainCanvas);
+        offCanvas.width = mainCanvas.width;
+        offCanvas.height = mainCanvas.height;
+        drawSkewGrid(offCanvas);
+    });
+}
+
+function resizeCanvas(canvas) {
+    if (!canvas) return;
+    const dpr = window.devicePixelRatio || 1;
+    canvas.style.width = window.innerWidth + "px";
+    canvas.style.height = window.innerHeight + "px";
+    canvas.width = window.innerWidth * dpr;
+    canvas.height = window.innerHeight * dpr;
+    const ctx = canvas.getContext("2d");
+    if (ctx) ctx.scale(dpr, dpr);
+}
+
+function getCssVar(name) {
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
+
+function drawSkewGrid(canvas) {
+    const ctx = canvas.getContext("2d");
+    const gridSize = parseInt(getCssVar("--grid-size")) || 200;
+    const lineColor = getCssVar("--grid-line-color") || "rgba(255, 192, 203,0.5)";
+    const highlightColor = getCssVar("--grid-highlight-color") || "rgba(255,255,255,0.2)";
+    const shadowColor = getCssVar("--grid-shadow-color") || "rgba(0,0,0,0.3)";
+    const lineWidth = parseInt(getCssVar("--grid-line-width")) || 2;
+    const [angle1, angle2] = [100, 60].map(a => a * Math.PI / 180);
+    const dx1 = Math.cos(angle1), dy1 = Math.sin(angle1);
+    const dx2 = Math.cos(angle2), dy2 = Math.sin(angle2);
+    const diag = Math.sqrt(canvas.width ** 2 + canvas.height ** 2) * 2;
+
+    [[dx1, dy1], [dx2, dy2]].forEach(([dx, dy]) => {
+        for (let i = -diag; i < diag; i += gridSize) {
+            ctx.beginPath();
+            ctx.moveTo(i * dx - dy * diag, i * dy + dx * diag);
+            ctx.lineTo(i * dx + dy * diag, i * dy - dx * diag);
+            ctx.strokeStyle = lineColor;
+            ctx.lineWidth = lineWidth;
+            ctx.shadowColor = shadowColor;
+            ctx.shadowBlur = 4;
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(i * dx - dy * diag + 1, i * dy + dx * diag + 1);
+            ctx.lineTo(i * dx + dy * diag + 1, i * dy - dx * diag + 1);
+            ctx.strokeStyle = highlightColor;
+            ctx.lineWidth = 1;
+            ctx.shadowBlur = 0;
+            ctx.stroke();
+        }
+    });
+}
+
+function animateGrid(mainCanvas) {
+    const ctx = mainCanvas.getContext("2d");
+    const draw = () => {
         const now = performance.now();
         const delta = (now - lastTime) / 1000;
         lastTime = now;
 
-        const ctx = mainCanvas.getContext('2d');
-        const BGColorFirst = getCssVar('--bg-color-first') || 'rgba(0,0,0)';
-        const BGColorMid = getCssVar('--bg-color-mid') || 'rgba(20,20,90)';
-        const BGColorEnd = getCssVar('--bg-color-end') || 'rgba(36,36,150)';
-
-        const grad = createAngleGradient(ctx, mainCanvas.width, mainCanvas.height, 45, [
-            { offset: 0, color: BGColorFirst },
-            { offset: 0.5, color: BGColorMid },
-            { offset: 1, color: BGColorEnd }
-        ]);
-
+        const grad = ctx.createLinearGradient(0, 0, mainCanvas.width, mainCanvas.height);
+        grad.addColorStop(0, "rgba(0,0,0)");
+        grad.addColorStop(0.5, "rgba(20,20,90)");
+        grad.addColorStop(1, "rgba(36,36,150)");
         ctx.fillStyle = grad;
         ctx.fillRect(0, 0, mainCanvas.width, mainCanvas.height);
 
-        const fadeDuration = parseFloat(getCssVar('--grid-fade-duration')) || 2;
+        const fadeDuration = 2;
         fadeTime += delta;
         if (fadeTime >= fadeDuration) {
             fadeTime = 0;
@@ -167,190 +249,239 @@ document.addEventListener('DOMContentLoaded', async function () {
         ctx.drawImage(offCanvas, 0, 0);
         ctx.restore();
 
-        requestAnimationFrame(() => animateGrid(mainCanvas));
-    }
+        requestAnimationFrame(draw);
+    };
+    draw();
+}
 
-    function initGridSystem() {
-        const mainCanvas = document.getElementById('grid-bg') || (() => {
-            const c = document.createElement('canvas');
-            c.id = 'grid-bg';
-            c.style.position = 'fixed';
-            c.style.left = '0';
-            c.style.top = '0';
-            c.style.width = '100vw';
-            c.style.height = '100vh';
-            c.style.zIndex = '-1';
-            c.style.pointerEvents = 'none';
-            document.body.appendChild(c);
-            return c;
-        })();
+// =============================
+// 图片渐进加载与弹窗
+// =============================
+function initImages() {
+    const imgs = document.querySelectorAll("img[data-src]");
+    imgs.forEach(img => {
+        const originalSrc = img.getAttribute("data-src");
+        progressiveLoad(img, originalSrc);
+    });
+}
 
-        resizeCanvas(mainCanvas);
+function progressiveLoad(imgEl, originalSrc) {
+    const thumbSrc = originalSrc.replace(/(\.\w+)$/, "-thumb$1");
+    imgEl.classList.add("progressive");
 
-        offCanvas = document.createElement('canvas');
-        offCanvas.width = mainCanvas.width;
-        offCanvas.height = mainCanvas.height;
-        offCtx = offCanvas.getContext('2d');
+    const thumb = new Image();
+    thumb.src = thumbSrc;
+    thumb.onload = () => imgEl.src = thumbSrc;
+    thumb.onerror = () => imgEl.src = originalSrc;
 
-        offCtx.imageSmoothingEnabled = false;
+    const full = new Image();
+    full.src = originalSrc;
+    full.onload = () => {
+        imgEl.src = originalSrc;
+        imgEl.classList.add("loaded");
+    };
+}
 
-        drawSkewGrid(offCanvas);
+function initImageModal() {
+    const modal = document.getElementById("imgModal");
+    const modalImg = document.getElementById("modalImg");
 
-        animateGrid(mainCanvas);
-
-        window.addEventListener('resize', () => {
-            resizeCanvas(mainCanvas);
-            offCanvas.width = mainCanvas.width;
-            offCanvas.height = mainCanvas.height;
-            drawSkewGrid(offCanvas);
+    document.querySelectorAll("img[data-src]").forEach(img => {
+        img.addEventListener("click", () => {
+            modal.style.display = "flex";
+            modalImg.src = img.src;
+            disableScroll();
         });
-    }
-
-    document.addEventListener('visibilitychange', () => {
-        if (!document.hidden) {
-            drawSkewGrid(offCanvas);
-        }
     });
 
-    // ========== 图片渐进式加载 ==========
-    function progressiveLoad(imgEl, originalSrc) {
-        const THUMB_SUFFIX = '-thumb';
-        function getThumbPath(original) {
-            const extPos = original.lastIndexOf('.');
-            if (extPos === -1) return original + THUMB_SUFFIX;
-            return original.slice(0, extPos) + THUMB_SUFFIX + original.slice(extPos);
+    modal.addEventListener("click", () => {
+        modal.style.display = "none";
+        modalImg.src = "";
+        enableScroll();
+    });
+}
+
+// =============================
+// 页面跳转系统
+// =============================
+const PagePath = {
+    home: "../index.html",
+    group: "../html/others/group.html",
+    DeltaForce: "../html/others/DeltaForce.html",
+    ACLOS: "../html/others/ACLOS.html",
+    BlueArchive: "../html/others/BlueArchive.html",
+};
+
+function initPageNavigation() {
+    document.querySelectorAll("[data-page]").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const key = btn.getAttribute("data-page");
+            if (PagePath[key]) {
+                document.querySelector(".loader-wrapper")?.classList.remove("loaded");
+                document.querySelector(".loader")?.classList.remove("loaded");
+                disableScroll();
+                setTimeout(() => (window.location.href = PagePath[key]), 1500);
+            } else {
+                console.warn("PagePath 未定义或键不存在:", key);
+            }
+        });
+    });
+}
+
+// =============================
+// 平滑滚动系统
+// =============================
+const scrollManager = {
+    frame: null,// 当前 requestAnimationFrame
+    active: false,// 是否有动画在进行
+    targetY: 0,// 当前目标滚动位置
+    wheelActive: false,// 是否滚轮在主导
+    stop() {
+        if (this.frame) cancelAnimationFrame(this.frame);
+        this.frame = null;
+        this.active = false;
+        this.wheelActive = false;
+    },
+    scrollTo(targetY, duration = 600) {
+        this.stop();// 停掉当前动画
+        this.wheelActive = false;
+        const startY = window.scrollY || document.documentElement.scrollTop;
+        const distance = targetY - startY;
+        if (Math.abs(distance) < 1) return;
+
+        const startTime = performance.now();
+        const ease = t => t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2;
+
+        const step = (now) => {
+            const elapsed = now - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            const newY = startY + distance * ease(progress);
+            window.scrollTo(0, newY);
+
+            if (progress < 1) {
+                this.active = true;
+                this.frame = requestAnimationFrame(step);
+            } else {
+                this.active = false;
+                this.frame = null;
+            }
+        };
+        this.frame = requestAnimationFrame(step);
+    },
+    wheelScrollStep() {
+        const currentY = window.scrollY || document.documentElement.scrollTop;
+        const distance = this.targetY - currentY;
+
+        if (Math.abs(distance) < 0.5) {
+            this.active = false;
+            return;
         }
-        const thumbSrc = getThumbPath(originalSrc);
-        imgEl.classList.add('progressive');
 
-        const testImg = new Image();
-        testImg.src = thumbSrc;
-        testImg.onload = () => imgEl.src = thumbSrc;
-        testImg.onerror = () => imgEl.src = originalSrc;
-
-        const fullImg = new Image();
-        fullImg.src = originalSrc;
-        fullImg.onload = () => {
-            imgEl.src = originalSrc;
-            imgEl.classList.add('loaded');
-        };
-        fullImg.onerror = () => {
-            console.warn('图片加载失败:', originalSrc);
-        };
+        const step = distance * 0.15;// 惯性速度
+        window.scrollTo(0, currentY + step);
+        this.frame = requestAnimationFrame(() => this.wheelScrollStep());
     }
+};
 
-    const preloader = {
-        getAllImagePaths: function () {
-            const paths = new Set();
-            document.querySelectorAll('img[data-src]').forEach(img => {
-                const src = img.getAttribute('data-src');
-                if (src) {
-                    paths.add(src);
-                    paths.add(src.replace(/(\.\w+)$/, '-thumb$1'));
+function initGlobalSmoothScroll() {
+    function waitForLoaderDone(timeout = 3000) {
+        return new Promise((resolve) => {
+            const wrapper = document.querySelector('.loader-wrapper');
+            if (!wrapper) {
+                if (document.readyState === 'complete') {
+                    setTimeout(resolve, 200);
+                } else {
+                    window.addEventListener('load', () => setTimeout(resolve, 200), { once: true });
+                }
+                return;
+            }
+            if (wrapper.classList.contains('loaded')) {
+                resolve();
+                return;
+            }
+            const obs = new MutationObserver(() => {
+                if (wrapper.classList.contains('loaded')) {
+                    obs.disconnect();
+                    resolve();
                 }
             });
-            return Array.from(paths);
-        },
-        loadImage: function (src) {
-            return new Promise((resolve, reject) => {
-                const img = new Image();
-                if (src.includes('thumb')) img.fetchPriority = 'high';
-                img.src = src;
-                img.onload = () => resolve(src);
-                img.onerror = () => reject(new Error(`Failed to load: ${src}`));
-            });
-        },
-        preloadAll: async function () {
-            try {
-                const images = this.getAllImagePaths();
-                if (images.length === 0) return;
-                const loadPromises = images.map(src => this.loadImage(src).catch(e => null));
-                await Promise.all(loadPromises);
-            } catch (error) {
-                console.warn('图片预加载出错:', error);
+            obs.observe(wrapper, { attributes: true, attributeFilter: ['class'] });
+            setTimeout(() => {
+                obs.disconnect();
+                resolve();
+            }, timeout);
+        });
+    }
+
+    waitForLoaderDone(4000).then(() => {
+        // --------- 统一管理器 ---------
+        const scrollManager = {
+            frame: null,
+            active: false,
+            wheelActive: false,
+            targetY: window.scrollY || 0,
+            stop() {
+                if (this.frame) cancelAnimationFrame(this.frame);
+                this.frame = null;
+                this.active = false;
+                this.wheelActive = false;
+            },
+            scrollTo(targetY, duration = 600) {
+                this.stop();
+                const startY = window.scrollY || document.documentElement.scrollTop;
+                const distance = targetY - startY;
+                if (Math.abs(distance) < 1) return;
+
+                const startTime = performance.now();
+                const ease = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+                const step = (now) => {
+                    const elapsed = now - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    const newY = startY + distance * ease(progress);
+                    window.scrollTo(0, newY);
+
+                    if (progress < 1) {
+                        this.active = true;
+                        this.frame = requestAnimationFrame(step);
+                    } else {
+                        this.active = false;
+                        this.frame = null;
+                    }
+                };
+                this.frame = requestAnimationFrame(step);
+            },
+            wheelScrollStep() {
+                const currentY = window.scrollY || document.documentElement.scrollTop;
+                const distance = this.targetY - currentY;
+                if (Math.abs(distance) < 0.5) {
+                    this.active = false;
+                    return;
+                }
+                const step = distance * 0.15;// 惯性速度
+                window.scrollTo(0, currentY + step);
+                this.frame = requestAnimationFrame(() => this.wheelScrollStep());
             }
-        }
-    };
+        };
 
-    function initImages() {
-        setTimeout(async () => {
-            await preloader.preloadAll();
-            document.querySelectorAll('img[data-src]').forEach(img => {
-                progressiveLoad(img, img.getAttribute('data-src'));
-            });
-        }, 500);
-    }
-
-    // ========== 禁用滚动 ==========
-    function preventTouchMove(e) {
-        e.preventDefault();
-    }
-
-    function disableScroll() {
-        scrollY = getScrollY();
-        document.body.style.position = 'fixed';
-        document.body.style.top = `-${scrollY}px`;
-        document.body.style.width = '100%';
-        document.addEventListener('touchmove', preventTouchMove, { passive: false });
-        headerScrollLocked = true; // 禁用 header 滑动
-    }
-
-    function enableScroll() {
-        document.body.style.position = '';
-        document.body.style.top = '';
-        document.body.style.width = '';
-        window.scrollTo(0, scrollY);
-        document.removeEventListener('touchmove', preventTouchMove);
-        headerScrollLocked = false; // 恢复 header 滑动
-        updateHeader(); // 弹窗关闭后立即刷新 header 状态
-    }
-
-    // ========== 图片点击显示 ==========
-    function initImageModal() {
-        const modal = document.getElementById('imgModal');
-        const modalImg = document.getElementById('modalImg');
-
-        let scrollY = 0; // 用于保存滚动位置
-
-        // 点击图片显示弹窗
-        document.querySelectorAll('img[data-src]').forEach(img => {
-            img.addEventListener('click', () => {
-                modal.style.display = 'flex';
-                modalImg.src = img.src;
-                disableScroll();
-            });
-        });
-
-        // 点击弹窗任意位置关闭
-        modal.addEventListener('click', () => {
-            modal.style.display = 'none';
-            modalImg.src = '';
-            enableScroll();
-        });
-    }
-
-    // ========== 平滑滚动 ==========
-    function initGlobalSmoothScroll() {
-        let isScrolling = false;
-        let scrollTarget = 0;
-        let scrollStart = 0;
-        let scrollStartTime = 0;
-
-        // 鼠标滚轮平滑滚动
-        window.addEventListener('wheel', function (e) {
+        // --------- 滚轮事件 ---------
+        window.addEventListener('wheel', (e) => {
             e.preventDefault();
+            scrollManager.wheelActive = true;
 
             const delta = e.deltaY;
-            scrollStart = getScrollY();
-            scrollTarget = scrollStart + delta * 6; // 调整滚动速度
-            scrollStartTime = performance.now();
+            const maxScroll = document.body.scrollHeight - window.innerHeight;
 
-            if (!isScrolling) {
-                smoothScrollToPosition();
+            // 累加目标滚动距离
+            scrollManager.targetY = Math.max(0, Math.min(maxScroll, scrollManager.targetY + delta * 2));
+
+            if (!scrollManager.active) {
+                scrollManager.active = true;
+                scrollManager.wheelScrollStep();
             }
         }, { passive: false });
 
-        // 键盘平滑滚动
+        // --------- 键盘滚动 ---------
         let isKeyHeld = false;
         let wasLongPress = false;
         let keyHoldTimer = null;
@@ -358,12 +489,10 @@ document.addEventListener('DOMContentLoaded', async function () {
         let holdDirection = null;
 
         window.addEventListener('keydown', (e) => {
-            // 如果键已经按住，直接返回
             if (isKeyHeld) return;
             isKeyHeld = true;
             wasLongPress = false;
 
-            // 判断方向
             if (['ArrowDown', 'PageDown', ' '].includes(e.key)) holdDirection = 'down';
             else if (['ArrowUp', 'PageUp'].includes(e.key)) holdDirection = 'up';
             else if (e.key === 'Home') holdDirection = 'home';
@@ -372,176 +501,76 @@ document.addEventListener('DOMContentLoaded', async function () {
 
             e.preventDefault();
 
-            // 200ms 内判断是否长按
             keyHoldTimer = setTimeout(() => {
                 if (!isKeyHeld) return;
-                wasLongPress = true; // 标记为长按
+                wasLongPress = true;
                 startContinuousScroll(holdDirection);
             }, 200);
         });
 
-        window.addEventListener('keyup', (e) => {
+        window.addEventListener('keyup', () => {
             clearTimeout(keyHoldTimer);
             isKeyHeld = false;
             cancelAnimationFrame(scrollAnimationId);
-
-            // 非长按执行
-            if (!wasLongPress && holdDirection) {
+            if (!wasLongPress && holdDirection)
                 smoothSingleScroll(holdDirection);
-            }
-
             holdDirection = null;
         });
 
-        // 单次平滑滚动
         function smoothSingleScroll(direction) {
-            const distance = window.innerHeight * 1;
-
-            if (direction === 'down') smoothScrollTo(getScrollY() + distance, 400);
-            else if (direction === 'up') smoothScrollTo(getScrollY() - distance, 400);
-            else if (direction === 'home') smoothScrollTo(0, 600);
-            else if (direction === 'end') smoothScrollTo(document.body.scrollHeight, 600);
+            scrollManager.stop();// 停掉滚轮动画
+            const distance = window.innerHeight;
+            if (direction === 'down') scrollManager.scrollTo(window.scrollY + distance, 400);
+            else if (direction === 'up') scrollManager.scrollTo(window.scrollY - distance, 400);
+            else if (direction === 'home') scrollManager.scrollTo(0, 400);
+            else if (direction === 'end') scrollManager.scrollTo(document.body.scrollHeight, 400);
         }
 
-        // 长按持续滚动
         function startContinuousScroll(direction) {
-            const step = 10; // 每帧滚动像素
-
+            scrollManager.stop();// 停掉滚轮动画
+            const step = 10;
             function stepScroll() {
-                if (!isKeyHeld) return; // 松开时立即停止
-                const currentY = getScrollY();
-
-                if (direction === 'down')
-                    window.scrollTo(0, currentY + step);
-                else if (direction === 'up')
-                    window.scrollTo(0, currentY - step);
-
+                if (!isKeyHeld) return;
+                const currentY = window.scrollY || document.documentElement.scrollTop;
+                if (direction === 'down') window.scrollTo(0, currentY + step);
+                else if (direction === 'up') window.scrollTo(0, currentY - step);
                 scrollAnimationId = requestAnimationFrame(stepScroll);
             }
-
             scrollAnimationId = requestAnimationFrame(stepScroll);
         }
-        function smoothScrollToPosition() {
-            if (isScrolling) return;
 
-            isScrolling = true;
-            const duration = 800;
-
-            function animate(currentTime) {
-                if (!scrollStartTime) scrollStartTime = currentTime;
-                const elapsed = currentTime - scrollStartTime;
-                const progress = Math.min(elapsed / duration, 1);
-
-                // 缓动函数
-                const easeOutQuart = t => 1 - Math.pow(1 - t, 3);
-                const currentY = scrollStart + (scrollTarget - scrollStart) * easeOutQuart(progress);
-
-                window.scrollTo(0, currentY);
-
-                if (progress < 1) {
-                    requestAnimationFrame(animate);
-                } else {
-                    isScrolling = false;
-                    scrollStartTime = 0;
-                }
-            }
-
-            requestAnimationFrame(animate);
-        }
-
-        initSmoothScroll();
-    }
-
-    function smoothScrollTo(targetPosition, duration = 1000) {
-        const startPosition = getScrollY();
-        const distance = targetPosition - startPosition;
-
-        // 如果距离很小，直接滚动，不需要动画
-        if (Math.abs(distance) < 5) {
-            window.scrollTo(0, targetPosition);
-            return;
-        }
-
-        let startTime = null;
-
-        function animation(currentTime) {
-            if (startTime === null) startTime = currentTime;
-            const timeElapsed = currentTime - startTime;
-            const progress = Math.min(timeElapsed / duration, 1);
-
-            // 缓动函数
-            const easeInOutCubic = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-            const run = easeInOutCubic(progress);
-
-            window.scrollTo(0, startPosition + distance * run);
-
-            if (timeElapsed < duration) {
-                requestAnimationFrame(animation);
-            }
-        }
-
-        requestAnimationFrame(animation);
-    }
-
-    function initSmoothScroll() {
+        // --------- 锚点/按钮跳转 ---------
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 const href = this.getAttribute('href');
-
                 if (href === '#' || href.includes('.html')) return;
-
                 e.preventDefault();
                 const target = document.querySelector(href);
-
                 if (target) {
-                    const topbarHeight = document.querySelector('.topbar').offsetHeight;
-                    const targetPosition = target.getBoundingClientRect().top + getScrollY() - topbarHeight;
-
-                    smoothScrollTo(targetPosition, 800); // 800ms 持续时间
+                    const topbar = document.querySelector('.topbar');
+                    const offset = topbar ? topbar.offsetHeight : 0;
+                    const targetY = target.getBoundingClientRect().top + (window.scrollY || 0) - offset;
+                    scrollManager.stop();// 停掉滚轮动画
+                    scrollManager.scrollTo(targetY, 400);
                 }
             });
         });
-    }
+    });
+}
 
-    // ========== 按键跳转页面 ==========
-    document.querySelectorAll('[data-page]').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const key = btn.getAttribute('data-page');
-            if (typeof PagePath !== 'undefined' && PagePath[key]) {
-                document.querySelector('.loader-wrapper').classList.remove('loaded');
-                setTimeout(function () {
-                    window.location.href = PagePath[key];
-                }, 1500);
-            } else {
-                console.warn('PagePath 未定义或键不存在:', key);
-                document.querySelector('.loader-wrapper').classList.add('loaded');
-                document.querySelector('.loader').classList.add('loaded');
-                setTimeout(function () {
-                    enableScroll();
-                }, 2000);
+
+function initSmoothScroll() {
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            const href = this.getAttribute('href');
+            if (href === '#' || href.includes('.html')) return; e.preventDefault();
+            const target = document.querySelector(href);
+            if (target) {
+                const topbar = document.querySelector('.topbar');
+                const offset = topbar ? topbar.offsetHeight : 0;
+                const targetY = target.getBoundingClientRect().top + getScrollY() - offset;
+                smoothScrollTo(targetY, 400);
             }
         });
     });
-
-    // ========== 主初始化流程 ==========
-    try {
-        disableScroll();
-        initGridSystem();
-        initGlobalSmoothScroll();
-        initImages();
-        initImageModal();
-
-        console.log('系统初始化完成');
-    } catch (error) {
-        console.error('初始化出错:', error);
-    }
-});
-
-//使用格式< button data-page="page_name" > text</button >
-const PagePath = {
-    home: '../index.html',
-    group: '../html/others/group.html',
-    DeltaForce: '../html/others/DeltaForce.html',
-    ACLOS: '../html/others/ACLOS.html',
-    BlueArchive: '../html/others/BlueArchive.html',
-};
+}
