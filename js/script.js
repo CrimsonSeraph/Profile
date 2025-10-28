@@ -305,11 +305,11 @@ function initImageModal() {
 // 页面跳转系统
 // =============================
 const PagePath = {
-    home: "../index.html",
-    group: "../html/others/group.html",
-    DeltaForce: "../html/others/DeltaForce.html",
-    ACLOS: "../html/others/ACLOS.html",
-    BlueArchive: "../html/others/BlueArchive.html",
+    home: "/index.html",
+    group: "/html/others/group.html",
+    DeltaForce: "/html/others/DeltaForce.html",
+    ACLOS: "/html/others/ACLOS.html",
+    BlueArchive: "/html/others/BlueArchive.html",
 };
 
 function initPageNavigation() {
@@ -524,6 +524,9 @@ function initGlobalSmoothScroll() {
             else if (direction === 'up') scrollManager.scrollTo(window.scrollY - distance, 400);
             else if (direction === 'home') scrollManager.scrollTo(0, 400);
             else if (direction === 'end') scrollManager.scrollTo(document.body.scrollHeight, 400);
+
+            scrollManager.targetY = target;
+            scrollManager.scrollTo(target, 400);
         }
 
         function startContinuousScroll(direction) {
@@ -551,6 +554,7 @@ function initGlobalSmoothScroll() {
                     const offset = topbar ? topbar.offsetHeight : 0;
                     const targetY = target.getBoundingClientRect().top + (window.scrollY || 0) - offset;
                     scrollManager.stop();// 停掉滚轮动画
+                    scrollManager.targetY = targetY;
                     scrollManager.scrollTo(targetY, 400);
                 }
             });

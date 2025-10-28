@@ -86,7 +86,7 @@ h4 {
 
 .a,
 p,
-button{
+button {
     font-size: clamp(1vh, 1.5vw, 1.5vh);
 }
 
@@ -101,16 +101,25 @@ canvas {
     pointer-events: none; /* 不拦截点击事件 */
 }
 
-img.progressive {
-    filter: blur(10px);
-    opacity: 0.6;
-    transition: filter 0.5s ease, opacity 0.5s ease;
+img {
+    max-width: 100%;
+    height: auto;
 }
 
-    img.progressive.loaded {
-        filter: blur(0);
-        opacity: 1;
+    img.special {
+        max-width: clamp(10vh, 20vw, 30vh);
     }
+
+    img.progressive {
+        filter: blur(10px);
+        opacity: 0.6;
+        transition: filter 0.5s ease, opacity 0.5s ease;
+    }
+
+        img.progressive.loaded {
+            filter: blur(0);
+            opacity: 1;
+        }
 
 .title {
     color: var(--special-text-color);
@@ -279,16 +288,16 @@ body {
     transform: translateY(-50%);
     z-index: 1;
     box-shadow: 0 0 10px var(--shadow-color);
+    opacity: 1;
+    transition: opacity 1s ease;
 }
 
-    .loader.loaded {
-        opacity: 1;
-        transition: opacity 0.5s ease 1s;
-    }
-
-.loader-wrapper.loaded .loader.loader {
+.loader-wrapper.loaded .loader {
     opacity: 0;
-    transition: opacity 0.5s ease;
+}
+
+.loader-wrapper:not(.loaded) .loader {
+    opacity: 1;
 }
 /* 包装器样式 */
 
@@ -522,10 +531,6 @@ body {
         opacity: 1;
     }
 
-    .avatar:hover img {
-        transform: scale(1.05);
-    }
-
 .about_wrap {
     width: 90vw;
     height: auto;
@@ -610,14 +615,32 @@ body {
 }
 
     .moments_list ul {
-        display: flex;
-        flex-direction: column;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: clamp(10px, 2vw, 20px);
+        list-style: none;
+        padding: 0;
+        margin: 0;
     }
 
     .moments_list li {
+        display: flex;
+        flex-direction: column;
         width: 100%;
         margin-bottom: clamp(10px, 1.5vh, 15px);
     }
+
+        .moments_list li .inner {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+            .moments_list li .inner img {
+                max-width: 100%;
+                height: auto;
+                display: block;
+            }
 /* ---- 四:动态 ---- */
 
 /* ---- 五:社交 ---- */
@@ -707,7 +730,7 @@ body {
 
     .a,
     p,
-    button{
+    button {
         font-size: clamp(1vh, 1.5vw, 1.5vh);
     }
 }
@@ -784,7 +807,7 @@ body {
 
     .a,
     p,
-    button{
+    button {
         font-size: clamp(20px, 3vw, 24px);
     }
 
@@ -819,7 +842,7 @@ body {
     }
 
     .contact {
-        width:90vw;
+        width: 90vw;
         transform: translateY(6vh) translateX(5vw);
         margin-bottom: clamp(20px, 3vh, 25px);
     }
@@ -922,7 +945,7 @@ body {
     }
 
     .contact {
-        width:90vw;
+        width: 90vw;
         transform: translateY(4vh) translateX(5vw);
         margin-bottom: clamp(15px, 2.5vh, 20px);
     }
@@ -948,7 +971,7 @@ body {
 
     .a,
     p,
-    button{
+    button {
         font-size: clamp(12px, 5vw, 14px);
     }
 
@@ -1081,7 +1104,7 @@ body {
 
     .a,
     p,
-    button{
+    button {
         font-size: clamp(1.5vh, 3vw, 2vh);
     }
 
@@ -1153,7 +1176,7 @@ body {
 
     .a,
     p,
-    button{
+    button {
         font-size: clamp(5px, 2vw, 12px);
     }
 
@@ -1196,3 +1219,24 @@ body {
 }
 
 /* ------------------ 响应式设置 ------------------ */
+
+/* ------------------ 其他页面 ------------------ */
+
+.other_inner ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.other_inner li {
+    display: flex;
+    justify-content: center;
+}
+
+.other_inner img {
+    width: 90vw;
+    border: 1px solid var(--shadow-color);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+/* ------------------ 其他页面 ------------------ */
